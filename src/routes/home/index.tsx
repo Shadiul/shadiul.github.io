@@ -1,4 +1,5 @@
 import React from "react";
+import FeaturedWorks from "../../components/FeaturedWorks";
 import Hero from "../../components/Hero";
 import Navbar from "../../components/Navbar";
 import RecentPosts from "../../components/RecentPosts";
@@ -13,6 +14,8 @@ const Homepage = (props: Props) => {
       <Hero />
       <div className="h-16" />
       <RecentPosts />
+      <div className="h-6" />
+      <FeaturedWorks />
     </div>
   );
 };

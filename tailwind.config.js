@@ -3,7 +3,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        bg: "white",
+        bg: "#FAFAFA",
         "bg-alt": "#EDF7FA",
       },
     },

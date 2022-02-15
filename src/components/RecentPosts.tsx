@@ -28,7 +28,9 @@ const RecentPosts = (props: Props) => {
           <h6 className="text-xl">Recent posts</h6>
           <a href="#">View all</a>
         </div>
+
         <div className="h-6" />
+
         <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
           {recentPosts.map((item) => {
             return (

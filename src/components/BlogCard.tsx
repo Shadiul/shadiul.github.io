@@ -9,7 +9,7 @@ type Props = {
 
 const BlogCard = (props: Props) => {
   return (
-    <div className="bg-bg p-6 w-full">
+    <div className="bg-bg p-6 w-full rounded">
       <h3 className="text-2xl leading-9 font-bold">{props.title}</h3>
 
       <div className="h-4" />
