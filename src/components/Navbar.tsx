@@ -1,6 +1,5 @@
-import { Icon } from "@mui/material";
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { PATHS } from "../constants/paths";
 
 type Props = {};

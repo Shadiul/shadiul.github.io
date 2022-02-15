@@ -5,7 +5,7 @@ type Props = {};
 
 const Hero = (props: Props) => {
   return (
-    <div className="mx-auto max-w-6xl flex flex-col px-4 sm:px-8 md:px-16 lg:px-32 ">
+    <div className="basic-margin">
       <div className="flex flex-col-reverse items-center gap-4 sm:flex-row sm:gap-8 md:gap-16">
         <div className="flex flex-col items-start gap-5 sm:gap-6 md:gap-7">
           <h1 className="text-center text-2xl font-bold leading-snug w-full sm:text-left md:text-4xl lg:text-5xl">
