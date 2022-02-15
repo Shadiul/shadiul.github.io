@@ -1,10 +1,18 @@
 import React from "react";
-import Homepage from "./pages/home";
+import { BrowserRouter } from "react-router-dom";
+import AuthContextProvider from "./contexts/auth_context";
+import Routes from "./routes/routes";
 
 type Props = {};
 
 const App = (props: Props) => {
-  return <Homepage />;
+  return (
+    <AuthContextProvider>
+      <BrowserRouter>
+        <Routes />
+      </BrowserRouter>
+    </AuthContextProvider>
+  );
 };
 
 export default App;
