@@ -37,13 +37,16 @@ const FeaturedWorks = (props: Props) => {
       <div className="flex flex-col gap-8 sm:gap-4">
         {works.map((item) => {
           return (
-            <WorkCard
-              key={item.id}
-              title={item.title}
-              year={item.year}
-              topic={item.topic}
-              body={item.body}
-            />
+            <>
+              <WorkCard
+                key={item.id}
+                title={item.title}
+                year={item.year}
+                topic={item.topic}
+                body={item.body}
+              />
+              <hr />
+            </>
           );
         })}
       </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import FeaturedWorks from "../../components/FeaturedWorks";
+import Footer from "../../components/Footer";
 import Hero from "../../components/Hero";
 import Navbar from "../../components/Navbar";
 import RecentPosts from "../../components/RecentPosts";
@@ -16,6 +17,8 @@ const Homepage = (props: Props) => {
       <RecentPosts />
       <div className="h-6" />
       <FeaturedWorks />
+      <div className="h-16" />
+      <Footer />
     </div>
   );
 };

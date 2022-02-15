@@ -8,7 +8,7 @@ const Hero = (props: Props) => {
     <div className="basic-margin">
       <div className="flex flex-col-reverse items-center gap-4 sm:flex-row sm:gap-8 md:gap-16">
         <div className="flex flex-col items-start gap-5 sm:gap-6 md:gap-7">
-          <h1 className="text-center text-2xl font-bold leading-snug w-full sm:text-left md:text-4xl lg:text-5xl">
+          <h1 className="text-center text-3xl font-bold leading-snug w-full sm:text-left md:text-4xl lg:text-5xl">
             Hi, I am Shadiul Huda,
             <br /> Frontend Developer
           </h1>
