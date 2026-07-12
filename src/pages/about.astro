@@ -10,6 +10,24 @@ const stack = {
   systems: ['Obsidian', 'Claude', 'MCP', 'Python', 'launchd agents'],
 };
 
+// Research interests (SOUL + research-statement facts; no grad-school specifics).
+const research = [
+  'software verification',
+  'formal methods',
+  'metamorphic testing',
+  'HCI',
+  'accessibility',
+  'multilingual NLP',
+];
+
+// Honors & community (DIU / Mevrik background, from resume + statements).
+const honors = [
+  '50% merit scholarship — 8 consecutive semesters',
+  'Programming-contest placements (Takeoff — 3rd & 4th)',
+  'Tutored 50+ students in foundational programming',
+  'Mentoring junior engineers since 2023',
+];
+
 // Inline stroke icons (lucide-style, MIT). Zero JS.
 const ICONS: Record<string, string> = {
   gauge:
@@ -115,9 +133,50 @@ const principles = [
           <span class="text-foreground">B.Sc. Computer Science &amp; Engineering</span> — Daffodil International University
         </li>
       </ol>
-      <p class="mt-4 text-[14px] leading-relaxed text-muted-foreground">
-        Also published <span class="text-foreground">"Designing Developer-Facing Interfaces: An HCI Approach to Improving DX in Frontend Tooling"</span> with IADITI — applying HCI methods to how frontend tooling itself gets designed.
-      </p>
+    </section>
+
+    <!-- where I'm headed -->
+    <section class="mt-12">
+      <h2 class="mb-5 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">Where I'm headed</h2>
+      <div class="flex flex-col gap-[18px] text-[16.5px] leading-[1.7] text-foreground">
+        <p>
+          Lately I'm pulled less toward shipping features and more toward the
+          engineering principles that make software <span class="text-primary">trustworthy</span> —
+          software verification, formal methods, and metamorphic testing for the
+          AI/ML parts that are hardest to pin down.
+        </p>
+        <p>
+          My angle on it is human. Navigating an English-first industry as a
+          native Bengali speaker taught me how much interface and language decide
+          who technology actually works for — so I care about this most for
+          multilingual and accessibility-critical systems. Long term, I want to
+          build HCI and NLP tools tailored to needs like that, back home.
+        </p>
+      </div>
+      <div class="mt-5 flex flex-wrap gap-2">
+        {research.map((chip) => (
+          <span class="rounded-full border border-border px-[11px] py-[5px] font-mono text-[11.5px] text-muted-foreground">{chip}</span>
+        ))}
+      </div>
+    </section>
+
+    <!-- published work -->
+    <section class="mt-12">
+      <h2 class="mb-5 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">Published work</h2>
+      <div class="rounded-[14px] border border-border bg-card p-5">
+        <h3 class="text-[16px] font-semibold leading-snug tracking-[-0.01em]">
+          Designing Developer-Facing Interfaces: An HCI Approach to Improving DX in Frontend Tooling
+        </h3>
+        <p class="mt-2 font-mono text-[12px] text-faint">
+          Journal of Information Systems Engineering &amp; Management &middot; Vol 9 (4s), 2024 &middot; pp 2098–2114
+        </p>
+        <p class="mt-3 text-[14.5px] leading-relaxed text-muted-foreground">
+          Applying HCI methods to how frontend tooling itself is designed. In developer
+          tasks, the approach measured a <span class="text-foreground">22.5% drop in cognitive load</span>
+          and <span class="text-foreground">32% fewer errors</span>.
+        </p>
+        <p class="mt-3 font-mono text-[12px] text-faint">with Shuvojit Devnath, Tanbir Hasan Taz</p>
+      </div>
     </section>
 
     <!-- stack -->
@@ -153,6 +212,18 @@ const principles = [
           </div>
         ))}
       </div>
+    </section>
+
+    <!-- honors & community -->
+    <section class="mt-12">
+      <h2 class="mb-5 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">Honors &amp; community</h2>
+      <ul class="grid gap-3 sm:grid-cols-2">
+        {honors.map((item) => (
+          <li class="relative pl-5 text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:left-0 before:top-[8px] before:size-[6px] before:rounded-full before:bg-primary">
+            {item}
+          </li>
+        ))}
+      </ul>
     </section>
 
     <!-- reach -->
