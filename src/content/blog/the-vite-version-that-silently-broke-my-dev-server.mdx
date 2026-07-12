@@ -1,0 +1,64 @@
+---
+title: The Vite version that silently broke my dev server
+description: Production built clean. Dev 500'd on every transform with a cryptic Missing field moduleType error. The culprit was a version my lockfile hoisted unasked.
+date: 2026-07-12
+tag: frontend
+draft: true
+---
+
+The build was green. `npm run build` produced a clean static site, every page rendered, no warnings. Then I ran the dev server and every single request 500'd. Same codebase. Same machine. One command worked and the other was on fire.
+
+That gap between "production is fine" and "dev is broken" is the worst kind of bug. It means nothing in your code is wrong. Something underneath it moved.
+
+## The error that told me nothing useful
+
+Every dev transform failed with the same message:
+
+```
+[500] Missing field `moduleType`
+    at builtin:vite-react-refresh-wrapper
+```
+
+The stack trace pointed at a React Fast Refresh wrapper — a piece of internal plumbing I never wrote and never import directly. `moduleType` is not a field in any config I own. So the honest first reaction was: I have no idea what this is.
+
+That is usually the signal that the bug lives below your code, in the dependency graph. The wrapper was a symptom. The disease was a version mismatch it was never designed to survive.
+
+## npm hoisted a major I never asked for
+
+Here is what actually happened. My framework — Astro 5.18 — expects Vite 6 internally. It builds its transform pipeline against that API. But npm's flat node_modules layout deduplicates and hoists packages to the top level, and something in my tree had a looser range that resolved to Vite 8.
+
+Vite 8 is the rolldown-based rewrite. It is a real major version with real internal changes. npm, doing exactly what npm does, decided the newer Vite could satisfy the top-level slot and hoisted it there. Astro then loaded a Vite whose module metadata shape it did not recognize. `moduleType` was a field the new Vite emitted — or omitted — differently, and the Fast Refresh wrapper choked on it.
+
+> Production built fine because the production build path never exercised the broken dev transform. The bug was hiding in exactly the code path I only hit locally.
+
+That is why the two commands diverged. The build and the dev server take different routes through Vite. Only one of them touched the mismatch.
+
+## Pin it until the framework catches up
+
+The fix is one entry in `package.json`:
+
+```json
+{
+  "overrides": {
+    "vite": "^6.4.3"
+  }
+}
+```
+
+`overrides` is npm's blunt instrument for exactly this. It forces every package in the tree to resolve `vite` to the version I name, regardless of what looser ranges elsewhere would allow. Delete `node_modules`, delete the lockfile if you must, reinstall, and now there is one deduped Vite that the framework actually supports.
+
+Dev server back on :4321. Transforms passing. No code changed.
+
+## The lesson I keep relearning
+
+A green production build is not proof your dependencies are sane. It proves one code path is sane.
+
+The uncomfortable part of a hoisting bug is that you did not do anything. You did not bump Vite. You may not even have a direct dependency on it — it arrived as a transitive dep of your framework. The lockfile moved under you, and a major version slid into a slot built for the previous one.
+
+So the mitigation is not clever. It is a note-to-self:
+
+- If a dev-only error names an internal wrapper you never wrote, suspect a version mismatch before you suspect your code.
+- `npm ls vite` (or whatever the offending package is) tells you instantly whether you have one copy or several fighting.
+- When you pin with `overrides`, leave a comment or a task for future-you. This pin is temporary. The day the framework supports the new major, the override becomes the thing holding you back.
+
+I have that reminder written down now: keep one deduped Vite until Astro ships support for the rolldown major. Until then, the override stays. It is not elegant. But dev works, and I know exactly why.

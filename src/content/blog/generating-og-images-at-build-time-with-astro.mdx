@@ -1,0 +1,47 @@
+---
+title: Generating OG images at build time with Astro
+description: A per-page OG image endpoint rendering with satori and resvg at build time, seeded for reproducible builds — plus the font-path bug that cost me an afternoon.
+date: 2026-07-12
+tag: frontend
+draft: true
+---
+
+Every link to my site used to unfurl into the same flat card. Same image for the home page, the projects list, every blog post. It worked, technically. It also said nothing. I wanted each page to carry its own 1200×630 preview — and I wanted them generated at build time, not hand-drawn in a design tool I'd never open twice.
+
+## The pipeline
+
+The whole thing is two libraries stapled together. **satori** takes an element tree and turns it into SVG. **@resvg/resvg-js** takes that SVG and rasterizes it to PNG. Neither touches a browser, so there's no headless Chromium to install and no runtime to babysit.
+
+I wrapped both in a `renderOgPng({ title, eyebrow, sub })` helper and exposed it through a static Astro endpoint at `src/pages/og/[...slug].png.ts`. Astro treats it like any other route: `getStaticPaths` enumerates the pages, each one resolves to a `.png`, and the whole set gets written to `dist/` during the build. From the page's side it's just a URL — `/og/site.png`, `/og/blog/<id>.png` — dropped into an `og:image` tag alongside a `twitter:card` of `summary_large_image`.
+
+Satori is usually driven with JSX, but it accepts a plain object tree just as happily, which is what I used. No JSX pragma to configure in an endpoint file that isn't a component.
+
+## Seeded, so builds don't churn
+
+My card art is a knowledge-graph motif — scattered nodes and edges behind the title. If I generated those points randomly, every build would produce a slightly different image, and git would see churn on files that are conceptually identical.
+
+So the randomness isn't random. I hash the page title with FNV-1a, feed that seed into a small mulberry32 PRNG, and draw the graph from that. Same title in, same graph out. Every page gets a distinct backdrop; every rebuild gets a byte-identical one.
+
+> The point of a build artifact is that the same input gives you the same output. A "random" background that reshuffles on every CI run isn't decoration — it's a diff you'll learn to ignore, which is worse.
+
+## The font trap
+
+Satori can't reach for system fonts. You hand it font buffers or it renders nothing. One catch worth stating loudly: it reads **ttf, otf, or woff — not woff2**. I bundled Inter and JetBrains Mono as woff files from their fontsource packages and read them out of `node_modules` at build time.
+
+Then I lost an afternoon. Locally, resolving the font paths relative to `import.meta.url` worked fine. In CI, the build died with `ENOENT`. The endpoint compiles into `dist/` and runs from there, so `import.meta.url` points at the bundled location — nowhere near the fonts. The fix was to stop asking where the module lives and start asking where the process is:
+
+```ts
+import { resolve } from 'node:path';
+import { readFileSync } from 'node:fs';
+
+const fontDir = resolve(process.cwd(), 'node_modules', '@fontsource', 'inter', 'files');
+const inter = readFileSync(resolve(fontDir, 'inter-latin-400-normal.woff'));
+```
+
+Both local builds and the CI action run from the repo root, so `process.cwd()` lands on the same place in both. Lesson filed: in a bundled endpoint, `import.meta.url` is about the code, not the working tree.
+
+## What it costs
+
+Roughly 1.5 seconds per image, satori plus resvg. At my page count that's noise. If you're generating hundreds, you'd want to cache on a content hash and skip unchanged cards.
+
+Everything sits in `devDependencies`, since none of it ships to the browser. `@resvg/resvg-js` is native, but it publishes prebuilt Linux binaries, so CI installs clean without a compiler. Draft posts fall out of the same filter that hides them everywhere else — no draft, no image, nothing leaked into production. Now the links say something.

@@ -1,0 +1,66 @@
+---
+title: "Never overwrite a fact: bi-temporal notes"
+description: When a role or status changes, I don't delete the old value. I append to a timeline that tracks when it became true and when my notes learned it.
+date: 2026-07-12
+tag: systems
+draft: true
+---
+
+I used to update my notes the way most people do. A fact changed, so I selected the old value and typed the new one over it. Clean. Tidy. And quietly destructive.
+
+Because the moment you overwrite `role: engineer` with `role: lead`, you've thrown away two things. You've lost what was true before. And you've lost the fact that you were once *wrong* — or simply late — about it.
+
+## Two clocks, not one
+
+The fix is older than software: bi-temporal modelling. Every fact carries two timestamps, not one.
+
+- **Event time** — when the fact became true in the world.
+- **Transaction time** — when my notes learned about it.
+
+These almost never match. Someone gets promoted in March, and I find out in May over coffee. The event happened in March. My record starts in May. A single `updated:` field can't hold both, so it silently picks one and lies about the other.
+
+Once you separate the two clocks, a whole class of questions becomes answerable. "What did I *believe* was true in April?" is different from "what *was* true in April?" The first is transaction time. The second is event time. Overwriting collapses them into a shrug.
+
+## Append, don't replace
+
+So my notes never overwrite a fact. They append to a timeline. The frontmatter holds the current value for fast lookups, and the body keeps the history underneath it.
+
+```yaml
+---
+type: person
+name: placeholder-a
+role: team lead          # current value, for quick reads
+role_since: 2026-03-01   # event time
+recorded: 2026-05-12     # transaction time
+---
+```
+
+Then in the body, a running log:
+
+```md
+## Role history
+- 2026-03 → team lead. (learned 2026-05-12, confidence: stated)
+- until 2026-03 → engineer. (learned 2026-01-04, confidence: high)
+```
+
+Nothing is deleted. The top line is what's true now. The lines below are the trail that got me there. If I need the state as of some date, I read down the list until the event times bracket it.
+
+## Changed facts are not contradictions
+
+Here's the payoff that surprised me most. Separating the timeline makes a *changed fact* look completely different from a *genuine contradiction* — and they should never be confused.
+
+A changed fact is monotonic. "Was an engineer, now a lead" is not a conflict. It's a promotion. The old value was correct for its window; the new one is correct for its window. Both are true, just at different times.
+
+A real contradiction is two sources disagreeing about the *same* window. One note says a person led mobile only; a later note, backed by better evidence, says they were cross-cutting the whole time. That's not a change over time. That's a correction of a mistaken belief, and it deserves a loud note:
+
+> This corrects the earlier framing above — same period, better evidence. Not a role change; I was wrong.
+
+If every edit is a blind overwrite, these two cases look identical: the text just changed. With a timeline, one is an ordinary append and the other is flagged as a reconciliation. The distinction is the whole point.
+
+## Why bother
+
+It's more typing, and I won't pretend otherwise. But the append-only version has never lied to me about the past.
+
+I can reconstruct what I knew and when. I can trust that a "change" is a real change and not a half-remembered edit. And when two facts fight, I know whether time settles it or whether I have to.
+
+A fact that changed is not a fact that was wrong. Storing both timestamps is how you keep those two ideas from bleeding into each other.

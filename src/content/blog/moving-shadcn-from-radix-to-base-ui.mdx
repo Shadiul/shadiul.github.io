@@ -1,0 +1,59 @@
+---
+title: Moving shadcn from Radix to Base UI
+description: shadcn flipped its default primitives from Radix to Base UI. Here's the migration, and the one API change that actually matters — asChild becomes render.
+date: 2026-07-12
+tag: frontend
+draft: true
+---
+
+shadcn changed its default primitives. For years it shipped on Radix. Now a fresh `init` gives you Base UI instead. Radix isn't dead — you can still opt back in — but the default moved, and I wanted to be where the defaults are.
+
+So I migrated my personal site over. It was a small job, because only one component was in play. That smallness is the point: it let me see exactly what the tooling does, with nothing else in the way.
+
+## What the migration actually touches
+
+shadcn doesn't ship a black-box codemod. The component source lives in your repo, so migrating is mostly telling the CLI to regenerate it against the new primitive. Four moves:
+
+1. Flip `components.json` from the radix style to the base style — `radix-nova` becomes `base-nova`.
+2. Re-add each component via the CLI with `--overwrite`, which delivers the Base UI variant.
+3. Install the Base UI package.
+4. Drop the old Radix dependency once nothing imports it.
+
+The one thing that surprised me: the CLI did not install the Base UI package for me. Re-adding the component happily rewrote the source to `import` from `@base-ui/react`, then left me with a module that didn't exist in `node_modules`. So:
+
+```bash
+# flip components.json style first, then:
+npx shadcn@latest add button --overwrite
+npm install @base-ui/react
+npm uninstall radix-ui
+```
+
+After that, a quick `grep -rn radix src/` and a scan of `package.json` — both clean, zero Radix left. If you have a pile of components, do them one at a time and re-run that grep at the end. It's the cheapest confidence you'll buy all day.
+
+## asChild is gone. Meet render.
+
+This is the change worth caring about. Radix does polymorphism with `asChild` — you set the prop, and its `Slot` clones your props onto whatever child element you pass. Base UI drops both. Instead you get a `render` prop:
+
+```tsx
+// Radix
+<Button asChild>
+  <a href="/blog">Blog</a>
+</Button>
+
+// Base UI
+<Button render={<a href="/blog" />}>Blog</Button>
+```
+
+Same intent — "be this element, keep the button's styling and behavior" — different mechanism. `render` takes the element directly rather than reaching into `children`. Once it clicks, it reads cleaner. But it is a real rename, so any component you've hand-customized needs its polymorphic call sites rewritten, not just regenerated.
+
+> If you never touched the generated source, `--overwrite` does the work. If you did, you're replaying your edits by hand.
+
+## The gotcha that outlived the primitive
+
+I build this site on Astro with React islands, and here's the thing nobody warns you about: `render` has the exact same boundary limitation `asChild` did.
+
+Neither one can wrap an element authored in an `.astro` file. Both need a genuine React element child to clone or render into, and a chunk of Astro markup isn't that. Swapping Radix for Base UI changed the prop name but not the physics.
+
+So my link-buttons in `.astro` files stay on `buttonVariants({ variant, size })` applied to a native `<a>` — plain classes, no component wrapper, no JS shipped. The `<Button>` component and its `render` prop live strictly inside `.tsx` islands, where there's a real React tree for them to hook into. That split kept the migrated pages at zero JavaScript, which was the whole reason I reached for Astro to begin with.
+
+Small migration, but a clarifying one. The dependency swap is mechanical. The mental model — `render` for `asChild`, and the same old boundary rule underneath — is what actually moved.

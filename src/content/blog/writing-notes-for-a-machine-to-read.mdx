@@ -1,0 +1,63 @@
+---
+title: Writing notes for a machine to read
+description: My notes have one primary reader, and it isn't me. Here's what changes when you write your second brain AI-first instead of human-first.
+date: 2026-07-12
+tag: systems
+draft: true
+---
+
+Most note-taking advice optimizes for a human skimming later. Mine doesn't. The primary reader of my notes is an AI, and I almost never open them by hand. That one assumption rewrites every formatting rule I used to follow.
+
+It sounds like a gimmick until you live with it. Then it becomes the only rule that matters.
+
+## The reader changed, so the format did too
+
+When you write for future-you, you lean on context. You remember the meeting. You remember why the file was named that. A stray bullet point is enough, because your brain fills the gaps.
+
+A machine has no gaps to fill. It pulls one note out of a search index with nothing around it. If that note can't explain itself, it's noise.
+
+So the first rule I wrote into my operating manual is **self-contained context**. Every note has to stand alone. No "as discussed above." No backlink doing the load-bearing work of an entire explanation. If the note is retrieved cold, it still has to make sense.
+
+## A preamble for the impatient reader
+
+The second rule is a plain-English preamble at the top of every note. Two or three sentences, no jargon, no structure.
+
+The point is triage. The reader should decide in ten seconds whether this note is relevant before parsing anything structured below it. Humans skim headings; a model reads a summary and moves on if it's the wrong note.
+
+> The note after this rule should announce what it is before it proves what it is.
+
+It feels redundant when you write it. It pays off every single retrieval.
+
+## Frontmatter is the real interface
+
+Under the preamble sits the part a machine actually loves: structured metadata. Every note carries machine-readable frontmatter it can filter on.
+
+```yaml
+---
+date: 2026-07-12
+type: knowledge
+tags:
+  - knowledge
+ai-first: true
+---
+```
+
+Different note types get different schemas. A project note and a person note don't need the same fields. But the floor is fixed: a date, a type, tags, and a flag that says this note was written for a machine. Filtering across years of notes only works if the metadata is boring and consistent.
+
+## Every claim carries a receipt
+
+Here's the rule that changed my writing the most. When a note states an external fact, it has to carry two things: a recency marker and a source.
+
+The recency marker is a date stamped on the claim itself, like "raised a new round (as of 2026-04)." The source is the raw URL, inline, next to the claim. Not a bibliography at the bottom. Right there.
+
+The reasoning is honest about time. A model reading the note next year needs to know which facts have gone stale. A dated claim with a live link can be re-verified in one fetch. An undated claim is a landmine — you can't tell confident truth from something you half-remembered.
+
+I pair that with **confidence levels**. Where it matters, a claim is tagged `stated`, `high`, `medium`, or `speculation`. The reader should never have to guess how much I trusted my own sentence.
+
+## Wikilinks keep the graph alive
+
+The last rule is mechanical but strict. Every person, project, idea, or decision I mention gets a `[[wikilink]]`. No exceptions for laziness.
+
+A human can tolerate a dead-end note. A machine traversing the graph can't jump from one idea to a related one if I never drew the edge. Links aren't decoration here. They're the roads.
+
+None of this is exotic. It's a preamble, clean frontmatter, dated sources, confidence tags, and links everywhere. The twist is only in who I'm writing for. Once you accept the reader isn't you, the rules stop feeling fussy and start feeling obvious.

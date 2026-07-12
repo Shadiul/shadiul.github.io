@@ -2,46 +2,98 @@
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Motif from '../components/Motif.astro';
+
+// Inline stroke icons (lucide-style, MIT). Zero JS — rendered as static SVG.
+const ICONS: Record<string, string> = {
+  rocket:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',
+  wind:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/></svg>',
+  atom:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z"/></svg>',
+  box:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>',
+  file:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v5h5"/><path d="M16 13H8M16 17H8M10 9H8"/></svg>',
+  globe:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20M2 12h20"/></svg>',
+  image:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/></svg>',
+  type:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>',
+  gem:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>',
+  sparkles:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M9.94 14.66A4.5 4.5 0 0 1 9.06 14L3 12l6.06-2a4.5 4.5 0 0 0 2.88-2.88L14 1l2 6.06A4.5 4.5 0 0 0 18.94 10L21 12l-6.06 2a4.5 4.5 0 0 0-2.88 2.88L12 23l-2-6.06Z"/></svg>',
+  plug:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M12 22v-5M9 8V2M15 8V2M6 8h12v4a6 6 0 0 1-12 0Z"/></svg>',
+  timer:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M10 2h4M12 14l3-3"/><circle cx="12" cy="14" r="8"/></svg>',
+  terminal:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="m4 17 6-6-6-6M12 19h8"/></svg>',
+  git:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>',
+  gauge:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="m12 14 4-4M3.34 19a10 10 0 1 1 17.32 0"/></svg>',
+  send:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4Z"/></svg>',
+};
 
 interface Item {
   name: string;
   note: string;
+  icon: string;
   href?: string;
 }
 interface Section {
   label: string;
+  blurb: string;
   items: Item[];
 }
 
-// Real setup only — expand as the owner supplies specifics (editor theme,
-// hardware details, fonts, terminal, etc.).
+// Real setup only. No machine identities — tools and workflow, not devices.
 const sections: Section[] = [
   {
-    label: 'workstations',
-    items: [
-      { name: 'MacBook Pro', note: 'work machine — where the scheduled vault agents live' },
-      { name: 'Windows desktop', note: 'personal rig at home' },
-      { name: 'Phone', note: 'mobile capture into the second brain via a Telegram bot' },
-    ],
-  },
-  {
     label: 'frontend',
+    blurb: 'The stack I ship in every day.',
     items: [
-      { name: 'React 19 + TypeScript', note: 'the day-job stack' },
-      { name: 'Tailwind CSS v4', note: 'styling everywhere — work and personal' },
-      { name: 'Astro', note: 'this site — static, zero JS by default' },
-      { name: 'shadcn/ui', note: 'component registry, themed to my own tokens' },
-      { name: 'MDX', note: 'blog posts — markdown with components when needed' },
+      { name: 'React 19 + TypeScript', note: 'the day-job stack — typed components end to end', icon: 'atom' },
+      { name: 'Tailwind CSS v4', note: 'utility-first styling, design tokens via @theme', icon: 'wind', href: 'https://tailwindcss.com' },
+      { name: 'shadcn/ui on Base UI', note: 'component registry, themed to my own violet tokens', icon: 'box', href: 'https://ui.shadcn.com' },
+      { name: 'Vite', note: 'the bundler under everything — fast HMR', icon: 'rocket', href: 'https://vite.dev' },
     ],
   },
   {
-    label: 'knowledge',
+    label: 'this site',
+    blurb: 'What this page you’re reading is built with — static, zero JS by default.',
     items: [
-      { name: 'Obsidian', note: 'the vault — plain markdown, git-synced', href: 'https://obsidian.md' },
-      { name: 'Claude Code', note: 'operates the vault, builds with me daily', href: 'https://claude.com/claude-code' },
-      { name: 'MCP', note: 'how other AI clients reach the vault' },
-      { name: 'launchd agents', note: 'four scheduled jobs that maintain the vault on a cadence' },
-      { name: 'Python', note: 'vault tooling — health checks, retrieval evals' },
+      { name: 'Astro', note: 'static output, ships zero JS unless a component asks for it', icon: 'rocket', href: 'https://astro.build' },
+      { name: 'MDX', note: 'blog posts — markdown with components when needed', icon: 'file', href: 'https://mdxjs.com' },
+      { name: 'GitHub Pages + Actions', note: 'push to main → build → deploy, no manual step', icon: 'globe', href: 'https://pages.github.com' },
+      { name: 'satori → resvg', note: 'build-time OG images seeded from the knowledge-graph motif', icon: 'image' },
+      { name: 'Shiki', note: 'dual-theme syntax highlighting in posts', icon: 'type', href: 'https://shiki.style' },
+    ],
+  },
+  {
+    label: 'knowledge & ai',
+    blurb: 'The second brain, and what keeps it current.',
+    items: [
+      { name: 'Obsidian', note: 'the vault — plain markdown, git-synced', icon: 'gem', href: 'https://obsidian.md' },
+      { name: 'Claude Code', note: 'operates the vault and builds with me daily', icon: 'sparkles', href: 'https://claude.com/claude-code' },
+      { name: 'MCP', note: 'how AI clients reach the vault as tools', icon: 'plug', href: 'https://modelcontextprotocol.io' },
+      { name: 'Python', note: 'vault tooling — health checks, retrieval evals', icon: 'terminal', href: 'https://python.org' },
+    ],
+  },
+  {
+    label: 'workflow',
+    blurb: 'How it all runs — the habits, not the hardware.',
+    items: [
+      { name: 'Git-synced vault', note: 'one knowledge base, every surface, synced over git', icon: 'git' },
+      { name: 'AI-first notes', note: 'written for a machine to read first — preamble, links, sources', icon: 'sparkles' },
+      { name: 'Scheduled agents', note: 'jobs that maintain the vault on a cadence — nothing deleted, only added', icon: 'timer' },
+      { name: 'Mobile capture', note: 'quick thoughts on the go via a Telegram bot, processed later', icon: 'send' },
+      { name: 'Retrieval eval', note: 'search quality is a number I can move, not a vibe', icon: 'gauge' },
     ],
   },
 ];
@@ -49,33 +101,54 @@ const sections: Section[] = [
 
 <Base
   title="/uses — Shadiul Huda"
-  description="Tools and setup Shadiul uses daily — frontend stack, knowledge tooling, and the machines it all runs on."
+  description="The tools and workflow Shadiul uses daily — the frontend stack, the site itself, and the AI-run second brain behind it."
   ogImage="/og/uses.png"
 >
   <Header />
 
   <main class="mx-auto max-w-[720px] px-6 pb-16">
-    <header class="pb-8 pt-[60px]">
-      <p class="font-mono text-xs uppercase tracking-[0.12em] text-primary">// setup</p>
-      <h1 class="mb-3.5 mt-4 text-[clamp(34px,5vw,56px)] font-semibold leading-[1.03] tracking-[-0.03em]">Uses</h1>
-      <p class="max-w-[52ch] text-lg text-muted-foreground">
-        The tools that survive daily use. A living list — updated as the setup evolves.
-      </p>
+    <header class="relative overflow-hidden pb-8 pt-[60px]">
+      <div class="relative z-10">
+        <p class="font-mono text-xs uppercase tracking-[0.12em] text-primary">// setup</p>
+        <h1 class="mb-3.5 mt-4 text-[clamp(34px,5vw,56px)] font-semibold leading-[1.03] tracking-[-0.03em]">Uses</h1>
+        <p class="max-w-[52ch] text-lg text-muted-foreground">
+          The tools that survive daily use — the frontend stack I ship in, the pieces
+          that build this site, and the AI-run second brain behind it. A living list,
+          updated as the setup evolves.
+        </p>
+      </div>
+      <Motif class="pointer-events-none absolute -right-6 top-6 hidden h-[150px] w-[260px] opacity-70 sm:block" />
     </header>
 
-    <div class="flex flex-col gap-10">
-      {sections.map((section) => (
+    <!-- Build layers — a quick visual of how this site stacks. -->
+    <div class="mb-12 flex flex-wrap items-center gap-x-2 gap-y-2 rounded-xl border border-border bg-accent/40 px-4 py-3.5 font-mono text-[12.5px]">
+      <span class="text-muted-foreground">this site:</span>
+      {['Astro', 'Tailwind', 'Base UI', 'MDX', 'Pages'].map((layer, i) => (
+        <>
+          {i > 0 && <span class="text-faint">&rarr;</span>}
+          <span class="rounded-md border border-border bg-background px-2 py-0.5 text-primary">{layer}</span>
+        </>
+      ))}
+    </div>
+
+    <div class="flex flex-col gap-11">
+      {sections.map((section, si) => (
         <section>
-          <h2 class="mb-4 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">{section.label}</h2>
+          <div class="mb-4 flex items-baseline gap-3">
+            <h2 class="font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">{section.label}</h2>
+            <span class="font-mono text-[11px] text-faint">0{si + 1}</span>
+          </div>
+          <p class="mb-4 max-w-[54ch] text-[14px] text-faint">{section.blurb}</p>
           <ul class="flex flex-col">
             {section.items.map((item) => (
-              <li class="grid gap-1 border-t border-border px-1 py-3.5 sm:grid-cols-[220px_1fr] sm:gap-5">
+              <li class="grid grid-cols-[24px_1fr] gap-x-3 gap-y-1 border-t border-border px-1 py-3.5 sm:grid-cols-[24px_200px_1fr] sm:gap-x-4">
+                <span class="mt-0.5 text-primary" set:html={ICONS[item.icon]} />
                 {item.href ? (
-                  <a href={item.href} class="font-medium text-primary hover:underline">{item.name}</a>
+                  <a href={item.href} target="_blank" rel="noopener" class="font-medium text-primary hover:underline">{item.name}</a>
                 ) : (
                   <span class="font-medium">{item.name}</span>
                 )}
-                <span class="text-[15px] text-muted-foreground">{item.note}</span>
+                <span class="col-start-2 text-[15px] text-muted-foreground sm:col-start-3">{item.note}</span>
               </li>
             ))}
           </ul>

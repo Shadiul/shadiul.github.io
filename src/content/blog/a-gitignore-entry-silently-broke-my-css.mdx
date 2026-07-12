@@ -1,0 +1,72 @@
+---
+title: A .gitignore entry silently broke my CSS
+description: Tailwind v4 reads your .gitignore to decide what to scan. One broad ignore pattern excluded real source dirs, so my styles never compiled.
+date: 2026-07-12
+tag: frontend
+draft: true
+---
+
+I spent an afternoon staring at layout code that was obviously correct. I'd edit the JSX, save, refresh, and nothing moved. The class names were right there in the served HTML. The page just ignored them.
+
+The classes were in the markup. They were not in the compiled CSS. The bug wasn't in my component at all. It was in `.gitignore`.
+
+## The symptom that lies to you
+
+Here's what made this one nasty. Everything you'd normally check looked fine.
+
+The JSX updated on every save. The dev server rebuilt without errors. Inspecting the DOM showed the exact utility classes I expected, spelled correctly. By every signal a frontend engineer reaches for first, the code was working.
+
+But the rendered page used dead class names. A `flex` that didn't flex. A `gap-4` that produced no gap. The browser was faithfully applying classes that resolved to nothing, because the corresponding CSS rules were never generated.
+
+Once you suspect the compiled output instead of the markup, the check is quick. Pull the actual CSS chunk and grep for the utility.
+
+```bash
+curl -s http://localhost:3000/_next/static/css/app.css | grep 'gap-4'
+```
+
+Nothing came back. The class was in the HTML and absent from the CSS. That gap is the whole bug in one line.
+
+## Tailwind reads your .gitignore
+
+Tailwind v4 ships with automatic source detection. You no longer hand-list a `content` glob. It walks your project and figures out which files to scan for class names on its own.
+
+To avoid scanning junk, that auto-detection respects `.gitignore`. Anything Git is told to ignore, Tailwind also skips. Most of the time this is exactly what you want. You don't need it burning cycles on `node_modules` or build artifacts.
+
+Now look at a pattern like this in a root `.gitignore`:
+
+```gitignore
+build/
+```
+
+That is not a path. It matches a directory named `build` at any depth. It's meant for compiled output. But it also matches a real source directory that happens to be named `build` — say, the folder backing a `/onboarding/build` route living somewhere under `src`.
+
+Git silently stops tracking those files. Tailwind silently stops scanning them. Any class used only inside that directory never compiles. The markup renders, the styles don't exist, and nothing anywhere prints a warning.
+
+> Your ignore file is no longer just a Git concern. It is part of your build configuration.
+
+## The fix and the tell
+
+The fix is a negation pattern that carves the real source back out, placed after the broad rule so it wins.
+
+```gitignore
+build/
+!**/src/**/build/
+```
+
+One gotcha bit me here. The dev server caches its gitignore evaluation. Touching a file wasn't enough. I needed a full restart before Tailwind re-read the rules and picked up the previously ignored directory.
+
+If you want to confirm what's happening before you touch anything, ask Git directly. It will tell you which rule is swallowing a file.
+
+```bash
+git check-ignore -v src/app/onboarding/build/page.tsx
+```
+
+The output points at the exact line and pattern. That's your proof.
+
+## What I actually learned
+
+The lesson generalizes past this one bug. Broad directory names in an ignore file — `build`, `dist`, `coverage`, `out` — are landmines the moment a real route segment shares the name.
+
+So I now treat two rules as the same rule. When I add a route folder that looks like a build artifact, I run `git check-ignore` on a file inside it before I trust that anything there will ship. If a utility only compiles when a second file happens to use it too, I stop blaming the class and start suspecting source scanning.
+
+Your `.gitignore` decides what compiles now. Read it like build config, because it is.

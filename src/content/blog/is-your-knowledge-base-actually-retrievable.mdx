@@ -1,0 +1,72 @@
+---
+title: Is your knowledge base actually retrievable?
+description: A knowledge base you can't search is a diary. I built an eval harness that scores recall@k and MRR against my real search engine, and the baseline humbled me.
+date: 2026-07-12
+tag: systems
+draft: true
+---
+
+I've written notes for years. I assumed that made me organized. Then I noticed I kept re-deriving things I had already written down, because I couldn't find them. A knowledge base you can't retrieve from isn't a second brain. It's a diary you never reread.
+
+The uncomfortable part is that "I can't find it" felt like a vibe, not a number. So I made it a number.
+
+## Search quality is a thing you can measure
+
+The trick is to stop testing search by feel. Pick a note. Ask a question that note answers. See where the note lands in the results. Do that across many notes and you get two honest metrics.
+
+**Recall@k** asks: is the right note in the top k? **MRR** — mean reciprocal rank — asks how high up it sits, so being #1 counts for a lot more than being #6.
+
+The catch with hand-written questions is that you cheat without meaning to. You echo the note's title in the query, and title-weighted search hands it back to you. So I wrote each question to deliberately avoid the note's title words. If a note's title is about *wiring*, the question asks about the 404 it fixes, never the word "wiring."
+
+```python
+def score(cases, engine, ks=(1, 3, 5, 10)):
+    recall = {k: 0 for k in ks}
+    rr_total = 0.0
+    for q in cases:
+        ranked = engine.search(q.text)          # note ids, best first
+        gold_pos = index_of(ranked, q.gold_id)  # 0-based, or None
+        if gold_pos is None:
+            continue
+        rr_total += 1 / (gold_pos + 1)
+        for k in ks:
+            if gold_pos < k:
+                recall[k] += 1
+    n = len(cases)
+    return {f"recall@{k}": recall[k] / n for k in ks} | {"mrr": rr_total / n}
+```
+
+That's the whole idea. The engine under test was my actual one: lexical, term-frequency, title-weighted, no semantic fusion. The same thing that answers every real query.
+
+## The humbling baseline
+
+Fourteen cases. Small, so I treat it as directional, not precise. Here is what fell out.
+
+| Metric | Value |
+|---|---|
+| recall@1 | 0.357 |
+| recall@3 | 0.571 |
+| recall@5 | 0.714 |
+| recall@10 | 1.000 |
+| MRR | 0.531 |
+
+Read the top and bottom rows together. Recall@10 is a perfect 1.0 — search never truly *loses* a note. But recall@1 is 0.357. The right note ranked first only about a third of the time.
+
+> My search was great at "you'll find it eventually" and bad at "here's the one you want."
+
+Eventually is not good enough. When I ask a question I open the top result, maybe the second. Nobody scrolls to #7 in their own notes.
+
+## Why the right note loses
+
+The failure pattern was consistent enough to name: **short canonical notes lose to long, chatty ones.** Pure term frequency with no length normalization rewards word count.
+
+The clearest example: a short note holding a person's core facts got buried at rank #7, beaten by a sprawling backend note that happened to mention the relevant term more times. A tight one-liner note lost to a long dev log. A canonical principles note lost to a file that duplicated those same principles verbatim but padded them out. Six of fourteen cases were buried below #3, almost always by something longer.
+
+Title-weighting only saved the day when my question happened to reuse a distinctive title word. Which is exactly the cheat I had tried to design out.
+
+## Now it's a dial, not a shrug
+
+The point of a baseline isn't the baseline. It's that every future change now has to beat it on the *same fourteen cases*. No guessing.
+
+My ranked hypotheses, cheapest first: type-boost — weight people and canonical knowledge notes above dev logs and index pages, which should fix most of the buries. Then length-normalize the term frequency, BM25-style, so long notes stop winning on raw counts. Then down-weight the table-of-contents notes that mention everything. Semantic search comes last, because it's the biggest change and I want a clean before-number to measure it against.
+
+Retrieval quality used to be a feeling. Now it's 0.357, and 0.357 is a thing I can move.

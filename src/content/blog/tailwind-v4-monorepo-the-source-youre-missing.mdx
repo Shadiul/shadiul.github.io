@@ -1,0 +1,62 @@
+---
+title: Tailwind v4 in a monorepo — the @source you're missing
+description: Tailwind v4 auto-scans the project it lives in and quietly skips your sibling workspace packages. Here's why shared UI classes vanish, and the one-line fix.
+date: 2026-07-12
+tag: frontend
+draft: true
+---
+
+Your shared UI package looks perfect in isolation. You drop it into the app, and half its styles are gone. No error, no warning — just naked, unstyled components. I lost an afternoon to this on a recent monorepo, so let me save you the same one.
+
+## The disappearing classes
+
+Tailwind v4 got rid of the `content` array in `tailwind.config.js`. Instead it auto-detects your source files. This is great — until you have more than one package.
+
+The catch is where "your source files" is measured from. Tailwind v4 scans relative to wherever `@import "tailwindcss"` lives. In a single app, that's the whole app, and everything works. In a monorepo, that import sits in the consuming app — so the scanner walks the app's directory and stops.
+
+Your shared UI package lives in a sibling directory, something like `packages/ui-kit`. The scanner never looks there. So any utility class that only appears inside the UI package — `flex`, `rounded-lg`, whatever — never makes it into the generated CSS. The class exists in your JSX. It just has no matching rule.
+
+That's the whole bug. The styles aren't broken. They were never generated.
+
+## The fix that feels wrong
+
+The instinct is to reach back into the consuming app and point Tailwind at the package with a relative path:
+
+```css
+/* app/src/globals.css — don't do this */
+@import "tailwindcss";
+@source "../../../../packages/ui-kit/src";
+```
+
+It works. It's also a trap. That `../../../../` is tied to the exact folder depth of one app. Move the file, add a nesting level, or wire up a second app that also consumes the package, and you're copy-pasting brittle paths everywhere. The package can't vouch for its own styles.
+
+Put the scan directive where it belongs — inside the package's own CSS:
+
+```css
+/* packages/ui-kit/src/globals.css */
+@import "tailwindcss";
+@source ".";
+```
+
+`@source "."` resolves relative to the file it's written in. So it scans the `ui-kit` source directory, no matter where that package sits on disk or who imports it. The consuming app inherits the whole thing through a normal import:
+
+```css
+/* app/src/globals.css */
+@import "@repo/ui-kit/styles";
+```
+
+> The package should be responsible for scanning its own classes. Any app that imports it just gets the right CSS for free.
+
+## Why this is the right shape
+
+The relative-path version puts knowledge in the wrong place. The app has to know the internal folder structure of a dependency. That's backwards. A package should be a black box you import.
+
+With `@source "."` in the package, the boundary is clean. The package declares "here are my classes, scan them." Every consumer — one app, five apps, a Storybook, a docs site — picks that up automatically. Add a new component to the UI kit and its classes are covered without touching anything downstream.
+
+It also fails loudly in the right direction. If someone forgets the directive, the missing styles show up immediately in the package's own preview, not three repos away in some app nobody's looking at.
+
+## The rule of thumb
+
+When utility classes from a workspace package aren't rendering, the reflex fix is to widen the scan in the app. Resist it. Go to that package's `globals.css` and add `@source "."` there instead.
+
+The symptom is "styles missing in the app." The cause almost always lives in the package. Fix it at the source — literally.

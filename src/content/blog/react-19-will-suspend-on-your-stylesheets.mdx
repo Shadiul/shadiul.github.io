@@ -1,0 +1,64 @@
+---
+title: React 19 will suspend on your stylesheets
+description: React 19 treats precedence stylesheet links as Suspense resources. Render one inside your tree and the whole thing can blank. Here is the rule I landed on.
+date: 2026-07-12
+tag: frontend
+draft: true
+---
+
+The bug looked haunted. Click anything, and the app froze. Focus an input, same freeze. No error, no stack trace, just a render that gave up and left me staring at nothing. It took me an embarrassingly long time to accept the culprit: a `<link rel="stylesheet">`.
+
+## The freeze had a pattern
+
+Navigation worked fine. Clicking and focusing did not.
+
+That asymmetry is the whole story, and it is what finally pointed me at the answer. I bisected the usual suspects first: state updates, event handlers, a rogue effect. None of them explained why route changes were immune while ordinary interactions were not. Two code paths that should behave the same were behaving differently, so the difference had to be in how each one entered React, not in my components.
+
+In a Vite SPA I was letting the router render head content — stylesheet links included — from inside the React component tree. It felt tidy. Everything lived in components. React owned the head. Then React 19 changed what a stylesheet link *means*.
+
+## Precedence turns a link into a resource
+
+React 19 added first-class support for stylesheets. If you render a link with a `precedence` attribute, React stops treating it as inert markup. It treats it as a resource it must load and order before it commits the paint. Precedence exists so React can control stylesheet order deterministically, which is genuinely useful. The catch is what that promotion costs you.
+
+```jsx
+// Rendered inside the React tree.
+// The router's Asset component emits this shape:
+<link rel="stylesheet" href="/app.css" precedence="default" />
+```
+
+Here is the part that bites. That resource can **suspend**. React will hold the entire component tree until the stylesheet resolves. On a fresh mount that is invisible. But on every re-render — a click, a focus event — React re-evaluates the resource, and it can suspend again.
+
+That single `precedence="default"` is enough. My router's asset component was adding it automatically. So every stylesheet link the router injected became a suspending resource sitting in the middle of my tree.
+
+Why did navigation escape? Because the router wraps navigations in `startTransition`. A transition tolerates suspension gracefully — it keeps the old UI on screen while the new one resolves. A plain click or focus re-render is not a transition. It has nothing to fall back to, so the tree suspends with no boundary above it, and you get a blank.
+
+> Navigation survived because it was a transition. Everything else was not.
+
+## The rule I landed on
+
+Stop rendering precedence stylesheet links inside the React tree. Full stop.
+
+Head content is document-level. It belongs in the document, not in a component that re-runs on every interaction. So I moved it there.
+
+```html
+<!-- index.html -->
+<head>
+  <link rel="preconnect" href="https://fonts.example.com" />
+  <link rel="stylesheet" href="/fonts.css" />
+</head>
+```
+
+```jsx
+// main.tsx — CSS enters through the bundler, not the tree
+import "./styles/globals.css";
+```
+
+Concretely, that meant dropping `head()`, `HeadContent`, and the shell component from my root route, and going back to a plain root that just renders an `<Outlet />`. The CSS was already arriving through the bundler import in `main.tsx`, so nothing visual changed. The freeze was gone. No Suspense boundary, no memoization, no clever guard. I just took the resource out of the render path entirely, which is the fix I trust most.
+
+## What to take from this
+
+Put your `<link>`, `<meta>`, and font preconnects in `index.html`. Let your bundler import global CSS. Keep suspending resources out of the hot path where interactions re-render them.
+
+The general lesson is bigger than one attribute. React 19 quietly promoted several bits of "just markup" into resources with lifecycles. A thing that used to be free is now something the reconciler waits on. When a render blanks with no error, ask what in that subtree might be a resource in disguise.
+
+For stylesheets, the safest answer is the oldest one. Keep them in the head, where the browser has handled them fine since 1996.

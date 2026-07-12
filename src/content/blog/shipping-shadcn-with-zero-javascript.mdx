@@ -1,0 +1,69 @@
+---
+title: Shipping shadcn with zero JavaScript
+description: shadcn is React, but in Astro it can server-render to static HTML and ship no JS at all — until you opt a component into hydration. Here's the catch.
+date: 2026-07-12
+tag: frontend
+draft: true
+---
+
+shadcn is React. React ships JavaScript. So putting shadcn on a portfolio site should mean shipping a runtime to render a button that does nothing. That bothered me enough to check.
+
+It turns out the premise is wrong. In Astro, a shadcn component can render to static HTML at build time and ship **zero** JavaScript. React only shows up when you ask for it.
+
+## Astro renders React, then throws it away
+
+Astro's model is server-first. A `.astro` page runs your components at build time and emits plain HTML. React components are no exception — Astro renders them to markup and, by default, sends nothing else. No hydration, no client bundle, no `<script>`.
+
+You opt *into* interactivity per component with a `client:*` directive. `client:load`, `client:visible`, `client:idle` — each one turns that component into an island: a small React root that hydrates in the browser. Skip the directive and the component is frozen HTML forever.
+
+For a shadcn Button that's just a styled anchor, frozen HTML is exactly right. I verified it the boring way — I looked at the output:
+
+```bash
+npm run build
+grep -c astro-island dist/index.html   # → 0
+```
+
+Zero `astro-island` markers, no reference to the React client chunk. The buttons render on-brand in both themes. Nothing hydrates because nothing needs to.
+
+> The React is a build-time convenience. The browser never learns it was involved.
+
+## The asChild trap
+
+Here's where the abstraction leaks. shadcn's `Button` supports an `asChild` prop so you can render a link that looks like a button:
+
+```tsx
+<Button asChild>
+  <a href="/blog">Read the blog</a>
+</Button>
+```
+
+Under the hood `asChild` uses a `Slot` that clones its child and merges the button's props — `className`, `data-slot`, everything — onto that child element. The catch is in the word *element*. Slot expects a **React** element.
+
+An `<a>` you write inside a `.astro` file is not a React element. It's Astro template markup. So Slot has nothing to clone props onto, and the anchor renders with an empty class and no styling — a plain, sad, unstyled link. Base UI's newer `render` prop has the same limitation; it can't cross the Astro-to-React boundary either.
+
+For a while I assumed I'd done something wrong. I hadn't. `asChild` and `render` are React-to-React mechanisms, and a link-button in a static page never becomes React.
+
+## Use buttonVariants on a native anchor
+
+The fix is to skip the component and take just the styles. shadcn exports `buttonVariants`, the same `cva` function that generates the Button's class string. Call it directly and drop the result onto a real `<a>`:
+
+```astro
+---
+import { buttonVariants } from "@/components/ui/button";
+---
+
+<a href="/blog" class={buttonVariants({ variant: "default" })}>
+  Read the blog
+</a>
+<a href="/about" class={buttonVariants({ variant: "outline", size: "sm" })}>
+  About
+</a>
+```
+
+Identical rendered output, no Slot, no boundary to cross, no JavaScript. This became my rule: `buttonVariants()` on an anchor for link-buttons in `.astro`, and the actual `<Button>` component only inside `.tsx` islands where a click needs to *do* something.
+
+## Where the runtime earns its keep
+
+None of this argues against React. It argues for putting it where it pays off. A mobile nav that opens a sheet, a theme toggle, a command menu — those are real islands. Mark them `client:*`, hydrate them, spend the bytes.
+
+Everything else — every button, badge, and card that's just markup — stays static. The mental model is simple once it clicks: shadcn gives you the styles for free at build time, and you pay for JavaScript only where you spend interactivity. Default to zero. Opt in on purpose.
