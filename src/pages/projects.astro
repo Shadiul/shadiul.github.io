@@ -16,6 +16,9 @@ interface Build {
   cats: Cat[];
   links: { label: string; href: string }[];
   dim?: string; // non-link note, e.g. "work · private"
+  role?: string;
+  detail?: string;
+  highlights?: string[];
 }
 
 const builds: Build[] = [
@@ -31,6 +34,14 @@ const builds: Build[] = [
       { label: 'live →', href: 'https://shadiul.github.io' },
       { label: 'github →', href: 'https://github.com/Shadiul/shadiul.github.io' },
     ],
+    role: 'Creator',
+    detail:
+      "This portfolio and dev blog, built to double as a working showcase of the design system and motifs it describes.",
+    highlights: [
+      'Astro, Tailwind, and MDX under shadcn/ui',
+      'A violet-on-dark design system',
+      'The knowledge-graph motif rendered live on the page',
+    ],
   },
   {
     icon: '▣',
@@ -42,17 +53,38 @@ const builds: Build[] = [
     cats: ['experiments', 'systems'],
     links: [],
     dim: 'write-up drafting',
+    role: 'Creator',
+    detail:
+      'A measurement rig for vault search quality, scoring retrieval against auto-generated question sets.',
+    highlights: [
+      'Scores recall@k and MRR',
+      'Question sets are auto-generated',
+      'Runs against the real search engine, not a mock',
+    ],
   },
   {
     icon: '◉',
     year: '2025–',
     title: 'AX Platform',
     blurb:
-      'Frontend for an AI-agent CX platform at Mevrik — console, embeddable chat widget, shared UI kit. Shipped to production.',
-    chips: ['React 19', 'TypeScript', 'Tailwind'],
+      "Frontend lead for Mevrik's AI-agent CX platform. I build the surfaces operators live in — inbox, CRM, embeddable widget, workflow canvas, agent studio, dashboards — wired to a live backend.",
+    chips: ['React 19', 'TypeScript', 'Next.js', 'TanStack', 'Tailwind', 'Cloudflare Workers'],
     cats: ['work', 'frontend'],
     links: [],
     dim: 'work · private',
+    role: 'Frontend lead',
+    detail:
+      "Mevrik's AI-agent customer-experience platform. I lead its frontend and wire each surface to a live backend over REST and WebSockets.",
+    highlights: [
+      'Omni-channel inbox — chat, email and social in one workspace',
+      'CRM & segment builder over server-paginated data',
+      'Embeddable chat widget + a one-line install/docking script',
+      'n8n-style workflow canvas for routing and automation',
+      'AI agent studio — build, equip and deploy agents',
+      'Analytics dashboards — deflection, volume, CSAT',
+      'Drove the Radix to Base UI migration and a 66-component UI kit',
+      'Kept the app under the Cloudflare Workers size ceiling; real-time chat over WebSockets',
+    ],
   },
   {
     icon: '⬢',
@@ -64,6 +96,14 @@ const builds: Build[] = [
     cats: ['work'],
     links: [],
     dim: 'Govt. of Bangladesh · 2022–23',
+    role: 'Frontend lead',
+    detail:
+      'A GIS-based tourism application for the Tourism Board of the Bangladesh Government, spanning web and mobile.',
+    highlights: [
+      'Map directions and user safety layers',
+      'Heavy map data visualization',
+      'Led the frontend team across web and mobile',
+    ],
   },
   {
     icon: '◆',
@@ -75,6 +115,9 @@ const builds: Build[] = [
     cats: ['work'],
     links: [],
     dim: '2022',
+    role: 'Frontend engineer',
+    detail: 'A crypto asset staking web app with separate user and admin experiences.',
+    highlights: ['User and admin dashboards', 'Data tables', 'Live data over WebSockets'],
   },
   {
     icon: '◇',
@@ -86,8 +129,29 @@ const builds: Build[] = [
     cats: ['work'],
     links: [],
     dim: '2022',
+    role: 'Frontend engineer',
+    detail: 'A crypto wallet shipped across web and mobile from a single team.',
+    highlights: ['React on web, Flutter on mobile', 'Shipped from one cross-platform team'],
   },
 ];
+
+const flagship = {
+  id: 'flagship',
+  title: 'The Second Brain',
+  blurb:
+    'A self-rewriting knowledge base Claude operates as a living second brain — sources rewrite existing pages, contradictions reconcile themselves, and scheduled agents maintain the vault while I sleep.',
+  chips: ['Obsidian', 'Claude', 'MCP', 'cron agents', 'AI-first notes'],
+  dim: 'write-up drafting — landing on the blog first',
+  role: 'Creator',
+  detail:
+    "A self-rewriting knowledge base that Claude operates as a living second brain. Sources rewrite existing pages instead of piling up new ones, contradictions get reconciled automatically, and scheduled agents keep the vault current while I sleep.",
+  highlights: [
+    'Sources rewrite existing pages instead of duplicating',
+    'Contradictions reconcile automatically',
+    'Scheduled agents maintain the vault on a cadence',
+    'Retrieval-eval harness scores recall@k and MRR',
+  ],
+};
 
 const filters: { key: 'all' | Cat; label: string }[] = [
   { key: 'all', label: 'all' },
@@ -137,24 +201,32 @@ const filters: { key: 'all' | Cat; label: string }[] = [
     </div>
 
     <!-- flagship -->
-    <article data-project data-spotlight data-cats="systems" class="spotlight mb-[22px] grid overflow-hidden rounded-2xl border border-border bg-card md:grid-cols-[1.15fr_.85fr]">
+    <article
+      data-project
+      data-spotlight
+      data-cats="systems"
+      data-open={flagship.id}
+      role="button"
+      tabindex="0"
+      aria-haspopup="dialog"
+      aria-label={`View details for ${flagship.title}`}
+      class="spotlight mb-[22px] grid cursor-pointer overflow-hidden rounded-2xl border border-border bg-card md:grid-cols-[1.15fr_.85fr]"
+    >
       <div class="p-[34px]">
         <span class="mb-3.5 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-primary">
           <span aria-hidden="true">&#9670;</span> Flagship
         </span>
-        <h2 class="mb-3 text-[29px] font-semibold tracking-[-0.02em]">The Second Brain</h2>
+        <h2 class="mb-3 text-[29px] font-semibold tracking-[-0.02em]">{flagship.title}</h2>
         <p class="mb-[18px] max-w-[48ch] text-pretty text-[15.5px] text-muted-foreground">
-          A self-rewriting knowledge base Claude operates as a living second brain —
-          sources rewrite existing pages, contradictions reconcile themselves, and
-          scheduled agents maintain the vault while I sleep.
+          {flagship.blurb}
         </p>
         <div class="flex flex-wrap gap-[7px]">
-          {['Obsidian', 'Claude', 'MCP', 'cron agents', 'AI-first notes'].map((chip) => (
+          {flagship.chips.map((chip) => (
             <span class="rounded-full border border-border px-[9px] py-1 font-mono text-[11px] text-muted-foreground">{chip}</span>
           ))}
         </div>
         <div class="flex gap-4 pt-4 font-mono text-[12.5px]">
-          <span class="text-faint">write-up drafting &mdash; landing on the blog first</span>
+          <span class="text-faint">{flagship.dim}</span>
         </div>
       </div>
       <div class="relative order-first min-h-[180px] border-b border-border bg-gradient-to-br from-accent to-secondary md:order-none md:min-h-[280px] md:border-b-0 md:border-l">
@@ -166,12 +238,17 @@ const filters: { key: 'all' | Cat; label: string }[] = [
 
     <!-- grid -->
     <div class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-[18px]">
-      {builds.map((b) => (
+      {builds.map((b, i) => (
         <div
           data-project
           data-spotlight
           data-cats={b.cats.join(' ')}
-          class="spotlight group flex flex-col gap-3 rounded-[14px] border border-border bg-card p-6 transition-all duration-150 hover:-translate-y-[3px] hover:border-primary motion-reduce:hover:translate-y-0"
+          data-open={i}
+          role="button"
+          tabindex="0"
+          aria-haspopup="dialog"
+          aria-label={`View details for ${b.title}`}
+          class="spotlight group flex cursor-pointer flex-col gap-3 rounded-[14px] border border-border bg-card p-6 transition-all duration-150 hover:-translate-y-[3px] hover:border-primary motion-reduce:hover:translate-y-0"
         >
           <div class="flex items-center justify-between">
             <span class="flex size-[38px] items-center justify-center rounded-[10px] bg-accent text-[19px] text-primary" aria-hidden="true">{b.icon}</span>
@@ -184,12 +261,11 @@ const filters: { key: 'all' | Cat; label: string }[] = [
               <span class="rounded-full border border-border px-[9px] py-1 font-mono text-[11px] text-muted-foreground">{chip}</span>
             ))}
           </div>
-          <div class="flex gap-4 pt-0.5 font-mono text-[12.5px]">
-            {b.links.map((l) => (
-              <a href={l.href} class="text-primary transition-colors hover:text-[var(--color-chart-2)]">{l.label}</a>
-            ))}
-            {b.dim && <span class="text-faint">{b.dim}</span>}
-          </div>
+          {b.dim && (
+            <div class="flex gap-4 pt-0.5 font-mono text-[12.5px]">
+              <span class="text-faint">{b.dim}</span>
+            </div>
+          )}
         </div>
       ))}
     </div>
@@ -199,6 +275,126 @@ const filters: { key: 'all' | Cat; label: string }[] = [
   </main>
   <Footer />
 
+  <!-- detail modals -->
+  <dialog data-modal={flagship.id} class="project-modal">
+    <div class="modal-body">
+      <button type="button" data-close class="modal-close" aria-label="Close">&times;</button>
+      <div class="mb-1 flex items-center gap-2 font-mono text-xs text-faint">
+        <span aria-hidden="true">&#9670;</span>
+        <span>Flagship</span>
+        <span aria-hidden="true">·</span>
+        <span>{flagship.role}</span>
+      </div>
+      <h3 class="mb-3 text-2xl font-semibold tracking-[-0.02em]">{flagship.title}</h3>
+      <p class="mb-4 text-pretty text-[15px] text-muted-foreground">{flagship.detail}</p>
+      <ul class="mb-4 flex flex-col gap-1.5">
+        {flagship.highlights.map((h) => (
+          <li class="flex gap-2 text-[14px] text-muted-foreground">
+            <span aria-hidden="true" class="text-primary">&rarr;</span>
+            <span>{h}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="mb-4 flex flex-wrap gap-[7px]">
+        {flagship.chips.map((chip) => (
+          <span class="rounded-full border border-border px-[9px] py-1 font-mono text-[11px] text-muted-foreground">{chip}</span>
+        ))}
+      </div>
+      <div class="flex flex-wrap items-center gap-4 font-mono text-[12.5px]">
+        <span class="text-faint">{flagship.dim}</span>
+      </div>
+    </div>
+  </dialog>
+
+  {builds.map((b, i) => (
+    <dialog data-modal={i} class="project-modal">
+      <div class="modal-body">
+        <button type="button" data-close class="modal-close" aria-label="Close">&times;</button>
+        <div class="mb-1 flex items-center gap-2 font-mono text-xs text-faint">
+          <span>{b.year}</span>
+          {b.role && <span aria-hidden="true">·</span>}
+          {b.role && <span>{b.role}</span>}
+        </div>
+        <h3 class="mb-3 text-2xl font-semibold tracking-[-0.02em]">{b.title}</h3>
+        <p class="mb-4 text-pretty text-[15px] text-muted-foreground">{b.detail ?? b.blurb}</p>
+        {b.highlights && (
+          <ul class="mb-4 flex flex-col gap-1.5">
+            {b.highlights.map((h) => (
+              <li class="flex gap-2 text-[14px] text-muted-foreground">
+                <span aria-hidden="true" class="text-primary">&rarr;</span>
+                <span>{h}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div class="mb-4 flex flex-wrap gap-[7px]">
+          {b.chips.map((chip) => (
+            <span class="rounded-full border border-border px-[9px] py-1 font-mono text-[11px] text-muted-foreground">{chip}</span>
+          ))}
+        </div>
+        {(b.links.length > 0 || b.dim) && (
+          <div class="flex flex-wrap items-center gap-4 font-mono text-[12.5px]">
+            {b.links.map((l) => (
+              <a href={l.href} target="_blank" rel="noopener" class="text-primary transition-colors hover:text-[var(--color-chart-2)]">{l.label}</a>
+            ))}
+            {b.dim && <span class="text-faint">{b.dim}</span>}
+          </div>
+        )}
+      </div>
+    </dialog>
+  ))}
+
   <script src="../scripts/project-filters.ts"></script>
   <script src="../scripts/spotlight.ts"></script>
+  <script src="../scripts/project-modal.ts"></script>
+
+  <style>
+    dialog.project-modal {
+      margin: auto;
+      max-width: 560px;
+      width: calc(100% - 2.5rem);
+      max-height: min(80vh, 640px);
+      overflow-y: auto;
+      padding: 34px;
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 6px);
+      background: var(--card);
+      color: var(--foreground);
+    }
+    dialog.project-modal::backdrop {
+      background: color-mix(in srgb, var(--background) 70%, transparent);
+      backdrop-filter: blur(6px);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      dialog.project-modal[open] {
+        animation: modal-in 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+    }
+    @keyframes modal-in {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted-foreground);
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+    .modal-close:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+  </style>
 </Base>

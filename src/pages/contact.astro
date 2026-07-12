@@ -1,0 +1,298 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import QRCode from 'qrcode';
+
+// QR code generated at build time — points to the site. Dark modules on a
+// white patch for reliable scanning against the dark card. Zero runtime JS.
+const siteUrl = 'https://shadiul.github.io';
+const qrSvg = await QRCode.toString(siteUrl, {
+  type: 'svg',
+  margin: 1,
+  errorCorrectionLevel: 'L',
+  color: { dark: '#0b0a12', light: '#ffffff' },
+});
+
+// Inline stroke icons (lucide-style, MIT). Zero JS, matches about.astro pattern.
+const ICONS: Record<string, string> = {
+  github:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M15 22v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 19 4.77 5.07 5.07 0 0 0 18.91.65S17.73.3 15 2.15a13.38 13.38 0 0 0-6 0C6.27.3 5.09.65 5.09.65A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.75c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/><path d="M9 19c-3 1-4.5-1-6-3"/></svg>',
+  linkedin:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>',
+  mail:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+  pin:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
+  copy:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
+  download:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>',
+};
+
+const contactRows = [
+  { icon: 'github', label: 'GitHub', value: '@Shadiul', href: 'https://github.com/Shadiul' },
+  { icon: 'linkedin', label: 'LinkedIn', value: 'in/shadiul', href: 'https://www.linkedin.com/in/shadiul/' },
+  { icon: 'mail', label: 'Email', value: 'shadiul@mevrik.tech', href: 'mailto:shadiul@mevrik.tech' },
+  { icon: 'pin', label: 'Location', value: 'Dhaka, Bangladesh (UTC+6)', href: null },
+];
+---
+
+<Base
+  title="Contact — Shadiul Huda"
+  description="Get in touch with Mohammad Shadiul Huda — Senior Software Engineer and frontend lead at Mevrik, Dhaka."
+>
+  <Header />
+
+  <main class="mx-auto max-w-[720px] px-6 pb-16">
+    <header class="pb-8 pt-[60px]">
+      <Eyebrow>contact</Eyebrow>
+      <h1 class="mt-7 text-[clamp(30px,4.5vw,44px)] font-semibold leading-[1.08] tracking-[-0.03em] text-balance">
+        Let's talk.
+      </h1>
+      <p class="mt-4 max-w-[52ch] text-pretty text-[16.5px] leading-relaxed text-muted-foreground">
+        Move your cursor over the card to tilt it — click or tap to flip for how to reach me.
+      </p>
+    </header>
+
+    <!-- flip card -->
+    <div class="flex justify-center py-4">
+      <label class="card-perspective">
+        <input type="checkbox" class="card-toggle sr-only" aria-label="Flip business card" />
+        <div class="card-tilt">
+        <div class="card-inner">
+          <!-- front -->
+          <div class="card-face card-front">
+            <div class="card-grid" aria-hidden="true"></div>
+            <div class="card-layer relative z-10 flex items-start justify-between gap-3">
+              <div class="flex items-center gap-2">
+                <span class="size-[8px] flex-none rounded-full bg-primary shadow-[0_0_10px_var(--primary)]" aria-hidden="true"></span>
+                <span class="font-mono text-[11px] tracking-[0.08em] text-muted-foreground">shadiul.github.io</span>
+              </div>
+              <span
+                class="card-layer-pop size-[68px] flex-none rounded-[7px] bg-white p-2 shadow-[0_2px_12px_-2px_rgba(0,0,0,0.6)] [&_svg]:block [&_svg]:h-full [&_svg]:w-full"
+                title="Scan for shadiul.github.io"
+                set:html={qrSvg}
+              />
+            </div>
+            <div class="card-layer mt-auto">
+              <p class="text-[20px] font-semibold leading-tight tracking-[-0.02em] text-foreground">Mohammad Shadiul Huda</p>
+              <p class="mt-1.5 font-mono text-[12px] text-primary">Senior Software Engineer &middot; Frontend Lead</p>
+              <p class="mt-1 font-mono text-[11px] text-faint">Mevrik AX Platform &middot; Dhaka, BD</p>
+            </div>
+            <span class="corner-motif" aria-hidden="true"></span>
+          </div>
+
+          <!-- back -->
+          <div class="card-face card-back">
+            <div class="mb-3.5 flex items-center justify-between">
+              <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">reach me</p>
+              <span class="size-[7px] rounded-full bg-primary/70 shadow-[0_0_8px_var(--primary)]" aria-hidden="true"></span>
+            </div>
+            <ul class="flex flex-1 flex-col justify-center gap-2">
+              {contactRows.map((row) => (
+                <li class="flex items-center gap-3">
+                  <span class="grid size-7 flex-none place-items-center rounded-md border border-border bg-accent/40 text-primary [&_svg]:size-[15px]" set:html={ICONS[row.icon]} />
+                  <span class="flex min-w-0 flex-1 items-baseline justify-between gap-3">
+                    <span class="font-mono text-[9px] uppercase tracking-[0.12em] text-faint">{row.label}</span>
+                    {row.href ? (
+                      <a href={row.href} target={row.href.startsWith('http') ? '_blank' : undefined} rel={row.href.startsWith('http') ? 'noopener' : undefined} class="truncate font-mono text-[12px] text-foreground hover:text-primary">{row.value}</a>
+                    ) : (
+                      <span class="truncate font-mono text-[12px] text-foreground">{row.value}</span>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        </div>
+      </label>
+    </div>
+    <p class="mt-2 text-center font-mono text-[11px] text-faint md:hidden">tap the card to flip</p>
+    <p class="mt-1 hidden text-center font-mono text-[11px] text-faint md:block">move to tilt &middot; click to flip</p>
+
+    <!-- reach -->
+    <section class="mt-10 flex flex-col items-center gap-5 text-center">
+      <p class="max-w-[46ch] text-pretty text-[15px] leading-relaxed text-muted-foreground">
+        Open to research collaboration and frontend/systems conversations.
+      </p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="mailto:shadiul@mevrik.tech" class="btn btn-primary">email me</a>
+        <a href="https://github.com/Shadiul" target="_blank" rel="noopener" class="btn btn-ghost">github</a>
+        <a href="https://www.linkedin.com/in/shadiul/" target="_blank" rel="noopener" class="btn btn-ghost">linkedin</a>
+        <button type="button" id="copy-email-btn" class="btn btn-ghost" data-email="shadiul@mevrik.tech">
+          <span set:html={ICONS.copy} aria-hidden="true" />
+          <span id="copy-email-label">copy email</span>
+        </button>
+        <a href="/card.png" download="Mohammad-Shadiul-Huda.png" class="btn btn-ghost">
+          <span set:html={ICONS.download} aria-hidden="true" />
+          download card
+        </a>
+      </div>
+      <p class="font-mono text-[11px] text-faint">scan the card&rsquo;s QR to open this site &middot; or download it as an image above</p>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<script>
+  const btn = document.getElementById('copy-email-btn');
+  const label = document.getElementById('copy-email-label');
+  if (btn && label) {
+    const original = label.textContent ?? 'copy email';
+    btn.addEventListener('click', async () => {
+      const email = btn.getAttribute('data-email') ?? '';
+      try {
+        await navigator.clipboard.writeText(email);
+        label.textContent = 'copied';
+        setTimeout(() => {
+          label.textContent = original;
+        }, 1600);
+      } catch {
+        // Clipboard API unavailable — email remains visible/selectable as a fallback.
+      }
+    });
+  }
+
+  // 3D tilt / parallax — the card leans toward the cursor. Flip stays on click/tap/focus.
+  const persp = document.querySelector('.card-perspective') as HTMLElement | null;
+  const tilt = persp?.querySelector('.card-tilt') as HTMLElement | null;
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (persp && tilt && !reduceMotion) {
+    const MAX = 9;
+    persp.addEventListener('pointermove', (ev) => {
+      const e = ev as PointerEvent;
+      const r = persp.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      tilt.style.setProperty('--ry', (px * MAX).toFixed(2) + 'deg');
+      tilt.style.setProperty('--rx', (-py * MAX).toFixed(2) + 'deg');
+    });
+    persp.addEventListener('pointerleave', () => {
+      tilt.style.setProperty('--ry', '0deg');
+      tilt.style.setProperty('--rx', '0deg');
+    });
+  }
+</script>
+
+<style>
+  .card-perspective {
+    display: block;
+    width: 360px;
+    max-width: 100%;
+    aspect-ratio: 360 / 212;
+    perspective: 1200px;
+    cursor: pointer;
+  }
+  .card-toggle {
+    position: absolute;
+    pointer-events: none;
+  }
+  /* Tilt layer — follows the cursor via --rx/--ry set in JS (parallax). */
+  .card-tilt {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 0.18s ease-out;
+  }
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    /* Base rotateY(0) keeps the 3D rendering context alive at rest so
+       backface-visibility hides the back face (otherwise it paints on top). */
+    transform: rotateY(0deg);
+    transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transform-style: preserve-3d;
+  }
+  /* Flip on click (checkbox) or keyboard focus — no longer on hover, so hover can tilt. */
+  .card-perspective:focus-within .card-inner,
+  .card-toggle:checked ~ .card-tilt .card-inner {
+    transform: rotateY(180deg);
+  }
+  /* Parallax depth — front layers float above the card surface. */
+  .card-layer {
+    transform: translateZ(24px);
+  }
+  .card-layer-pop {
+    transform: translateZ(42px);
+  }
+  .card-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    padding: 22px 26px;
+    backface-visibility: hidden;
+    box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.5);
+  }
+  .card-front {
+    background: linear-gradient(155deg, var(--card) 55%, color-mix(in oklab, var(--primary) 10%, var(--card)) 100%);
+    transform-style: preserve-3d;
+  }
+  .card-back {
+    transform: rotateY(180deg);
+  }
+  .card-grid {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, color-mix(in oklab, var(--primary) 35%, transparent) 1px, transparent 1px);
+    background-size: 16px 16px;
+    opacity: 0.35;
+    mask-image: linear-gradient(155deg, black, transparent 70%);
+    pointer-events: none;
+  }
+  .corner-motif {
+    position: absolute;
+    right: -30px;
+    bottom: -30px;
+    width: 120px;
+    height: 120px;
+    border-radius: 9999px;
+    background: color-mix(in oklab, var(--primary) 22%, transparent);
+    filter: blur(6px);
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-perspective {
+      cursor: default;
+      aspect-ratio: auto;
+      height: auto;
+    }
+    .card-tilt {
+      display: contents;
+    }
+    .card-layer,
+    .card-layer-pop {
+      transform: none !important;
+    }
+    .card-inner {
+      transition: none;
+      transform: none !important;
+      display: flex;
+      flex-direction: column;
+      position: static;
+      height: auto;
+      gap: 16px;
+    }
+    .card-face {
+      position: static;
+      backface-visibility: visible;
+      transform: none !important;
+    }
+    .card-back {
+      border-top: 1px dashed var(--border);
+      border-radius: 16px;
+    }
+  }
+</style>

@@ -9,7 +9,7 @@ const PAGES: Record<string, OgSpec> = {
   site: {
     eyebrow: 'shadiul.github.io',
     title: 'I build interfaces and systems that remember.',
-    sub: 'Shadiul Huda — senior frontend engineer · Dhaka, BD',
+    sub: 'Shadiul Huda — Senior Software Engineer · frontend lead · Dhaka, BD',
   },
   projects: {
     eyebrow: 'shadiul.github.io · projects',
@@ -23,8 +23,8 @@ const PAGES: Record<string, OgSpec> = {
   },
   about: {
     eyebrow: 'shadiul.github.io · about',
-    title: "I'm Shadiul — Utsho to most people.",
-    sub: 'Senior frontend engineer at Mevrik · systems builder by night.',
+    title: "I'm Shadiul — Utso to most people.",
+    sub: 'Senior Software Engineer & frontend lead at Mevrik · systems builder by night.',
   },
   uses: {
     eyebrow: 'shadiul.github.io · setup',

@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Motif from '../components/Motif.astro';
 import Eyebrow from '../components/Eyebrow.astro';
+import StackGrid from '../components/StackGrid.astro';
 import { getGitHubProfile } from '@/lib/github';
 
 const profile = await getGitHubProfile('Shadiul');
@@ -34,17 +35,6 @@ const publications = [
   },
 ];
 
-// Skills — from Shadiul's résumé (Technical Skills), plus this site's own
-// stack (Astro/MDX) and the second-brain tooling. All real, nothing invented.
-const skills = [
-  { group: 'Languages', items: ['JavaScript', 'TypeScript'] },
-  { group: 'Frontend', items: ['React', 'Next.js', 'Redux', 'Tailwind', 'Astro', 'MDX'] },
-  { group: 'Backend', items: ['Node.js', 'PostgreSQL', 'MongoDB'] },
-  { group: 'Tools', items: ['Git', 'Docker', 'Cloudflare', 'Firebase'] },
-  { group: 'Foundations', items: ['Data Structures', 'Algorithms', 'System Design'] },
-  { group: 'Systems & AI', items: ['Obsidian', 'Claude', 'MCP', 'Python'] },
-];
-
 // Research interests (SOUL + research-statement facts; no grad-school specifics).
 const research = [
   'software verification',
@@ -55,12 +45,12 @@ const research = [
   'multilingual NLP',
 ];
 
-// Honors & community (DIU / Mevrik background, from resume + statements).
+// Recognition — senior signals: award, leadership, mentorship, engineering impact.
 const honors = [
-  '50% merit scholarship — 8 consecutive semesters',
-  'Programming-contest placements (Takeoff — 3rd & 4th)',
-  'Tutored 50+ students in foundational programming',
-  'Mentoring junior engineers since 2023',
+  '"React Ninja" — internal recognition at Mevrik',
+  'Frontend lead — 2+ years owning the AX Platform frontend',
+  'Mentor engineers through code review since 2023',
+  'Drove the design-system migration to Base UI — a 66-component kit',
 ];
 
 // Inline stroke icons (lucide-style, MIT). Zero JS.
@@ -102,7 +92,7 @@ const principles = [
 
 <Base
   title="About — Shadiul Huda"
-  description="Shadiul Huda — Utsho — senior frontend engineer at Mevrik in Dhaka. Interfaces by day, self-maintaining systems by night."
+  description="Shadiul Huda — Utso — Senior Software Engineer & frontend lead at Mevrik in Dhaka. Interfaces by day, self-maintaining systems by night."
   ogImage="/og/about.png"
 >
   <Header />
@@ -140,11 +130,15 @@ const principles = [
 
     <div class="flex flex-col gap-[22px] text-pretty text-[17.5px] leading-[1.7] text-foreground">
       <p>
-        I'm a senior frontend engineer at <a href="https://mevrik.tech" class="text-primary hover:underline">Mevrik</a>,
+        I'm a Senior Software Engineer and the frontend lead at <a href="https://mevrik.tech" target="_blank" rel="noopener" class="text-primary hover:underline">Mevrik</a>,
         working from Dhaka, Bangladesh. We build AI agents that run customer
-        experience while humans supervise what matters — I ship the frontend
-        for that platform: the console people work in, the chat widget that
-        embeds anywhere, and the UI kit both are built from.
+        experience while humans supervise what matters — I own the frontend
+        and the range of surfaces it takes: the operator console and its
+        omni-channel inbox, a CRM and segment builder, an embeddable chat
+        widget with a one-line install script, an n8n-style workflow canvas,
+        an AI agent studio, and the analytics dashboards — all on the shared
+        UI kit they're built from. I've led the frontend for 2+ years and
+        mentor the team through code review.
       </p>
       <p>
         Nights are for systems. The one I keep coming back to is my
@@ -166,15 +160,19 @@ const principles = [
       <ol class="flex flex-col gap-3.5 border-l border-border pl-5 tabular-nums">
         <li class="relative text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:-left-[24px] before:top-[8px] before:size-[7px] before:rounded-full before:bg-primary">
           <span class="font-mono text-xs text-faint">2022 — present</span><br />
-          <span class="text-foreground">Senior Software Engineer, Mevrik</span> — frontend, Dhaka
+          <span class="text-foreground">Senior Software Engineer &amp; frontend lead, Mevrik</span> — Dhaka
         </li>
         <li class="relative text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:-left-[24px] before:top-[8px] before:size-[7px] before:rounded-full before:bg-border">
           <span class="font-mono text-xs text-faint">2021 — 2022</span><br />
-          <span class="text-foreground">Software Engineer, NexusLab</span> — fintech web + mobile
+          <span class="text-foreground">Software Engineer, NexusLab</span> — fintech — real-time trading dashboards, web + mobile
         </li>
         <li class="relative text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:-left-[24px] before:top-[8px] before:size-[7px] before:rounded-full before:bg-border">
           <span class="font-mono text-xs text-faint">2020 — 2021</span><br />
           <span class="text-foreground">Mobile App Developer, Antooba Corp</span>
+        </li>
+        <li class="relative text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:-left-[24px] before:top-[8px] before:size-[7px] before:rounded-full before:bg-border">
+          <span class="font-mono text-xs text-faint">2018 — 2019</span><br />
+          <span class="text-foreground">Unity / AR-VR Developer, GrapView</span>
         </li>
         <li class="relative text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:-left-[24px] before:top-[8px] before:size-[7px] before:rounded-full before:bg-border">
           <span class="font-mono text-xs text-faint">2017 — 2021</span><br />
@@ -228,19 +226,10 @@ const principles = [
       </div>
     </section>
 
-    <!-- skills -->
+    <!-- stack (shared component, also on the home page) -->
     <section class="mt-12">
       <h2 class="mb-5 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">What I work with</h2>
-      <div class="flex flex-col gap-4">
-        {skills.map((row) => (
-          <div class="flex flex-wrap items-baseline gap-2">
-            <span class="w-full font-mono text-[11px] uppercase tracking-[0.1em] text-faint sm:w-[110px]">{row.group}</span>
-            {row.items.map((chip) => (
-              <span class="rounded-full border border-border px-[11px] py-[5px] font-mono text-[11.5px] text-muted-foreground">{chip}</span>
-            ))}
-          </div>
-        ))}
-      </div>
+      <StackGrid />
     </section>
 
     <!-- principles -->
@@ -259,9 +248,9 @@ const principles = [
       </div>
     </section>
 
-    <!-- honors & community -->
+    <!-- recognition -->
     <section class="mt-12">
-      <h2 class="mb-5 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">Honors &amp; community</h2>
+      <h2 class="mb-5 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">Recognition</h2>
       <ul class="grid gap-3 sm:grid-cols-2">
         {honors.map((item) => (
           <li class="relative pl-5 text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:left-0 before:top-[8px] before:size-[6px] before:rounded-full before:bg-primary">

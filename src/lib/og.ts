@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
+import QRCode from 'qrcode';
 
 /* Build-time OG image generator — 1200×630 PNG.
  * Dark violet ground + the knowledge-graph identity motif, brand eyebrow,
@@ -171,4 +172,74 @@ export async function renderOgPng({ title, eyebrow, sub }: OgSpec): Promise<Buff
 
   const svg = await satori(tree as never, { width: W, height: H, fonts: await loadFonts() });
   return new Resvg(svg, { fitTo: { mode: 'width', value: W } }).render().asPng() as Buffer;
+}
+
+/** Build-time downloadable business card — 1080×636 PNG (credit-card ratio). */
+export async function renderCardPng(): Promise<Buffer> {
+  const CW = 1080;
+  const CH = 636;
+  const qr = await QRCode.toDataURL('https://shadiul.github.io', {
+    margin: 1,
+    width: 220,
+    errorCorrectionLevel: 'L',
+    color: { dark: '#0b0a12', light: '#ffffff' },
+  });
+
+  const brand = el(
+    'div',
+    { style: { display: 'flex', alignItems: 'center', gap: '13px' } },
+    el('div', {
+      style: {
+        width: '16px', height: '16px', borderRadius: '50%',
+        backgroundColor: C.accent, boxShadow: `0 0 18px ${C.accent}`,
+      },
+    }),
+    el('div', {
+      style: { fontFamily: 'JetBrains Mono', fontSize: '24px', color: C.muted, letterSpacing: '0.06em' },
+    }, 'shadiul.github.io'),
+  );
+
+  const qrPatch = el(
+    'div',
+    { style: { display: 'flex', backgroundColor: '#ffffff', padding: '12px', borderRadius: '16px' } },
+    el('img', { src: qr, width: 150, height: 150 }),
+  );
+
+  const nameBlock = el(
+    'div',
+    { style: { display: 'flex', flexDirection: 'column', gap: '12px' } },
+    el('div', {
+      style: { fontSize: '60px', fontWeight: 600, color: C.text, letterSpacing: '-0.02em' },
+    }, 'Mohammad Shadiul Huda'),
+    el('div', {
+      style: { fontFamily: 'JetBrains Mono', fontSize: '26px', color: C.accent },
+    }, 'Senior Software Engineer · Frontend Lead'),
+    el('div', {
+      style: { fontFamily: 'JetBrains Mono', fontSize: '22px', color: C.faint },
+    }, 'Mevrik AX Platform · Dhaka, BD'),
+  );
+
+  const card = el(
+    'div',
+    {
+      style: {
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+        width: '100%', height: '100%', padding: '64px 72px',
+        borderRadius: '30px', border: `1px solid ${C.border}`,
+        backgroundColor: C.card,
+        backgroundImage: `linear-gradient(150deg, ${C.card} 52%, #241b38 100%)`,
+      },
+    },
+    el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' } }, brand, qrPatch),
+    nameBlock,
+  );
+
+  const tree = el(
+    'div',
+    { style: { width: '100%', height: '100%', display: 'flex', padding: '28px', backgroundColor: C.ground, fontFamily: 'Inter' } },
+    card,
+  );
+
+  const svg = await satori(tree as never, { width: CW, height: CH, fonts: await loadFonts() });
+  return new Resvg(svg, { fitTo: { mode: 'width', value: CW } }).render().asPng() as Buffer;
 }
