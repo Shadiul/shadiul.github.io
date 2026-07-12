@@ -3,7 +3,7 @@ title: React 19 will suspend on your stylesheets
 description: React 19 treats precedence stylesheet links as Suspense resources. Render one inside your tree and the whole thing can blank. Here is the rule I landed on.
 date: 2026-07-12
 tag: frontend
-draft: true
+draft: false
 ---
 
 The bug looked haunted. Click anything, and the app froze. Focus an input, same freeze. No error, no stack trace, just a render that gave up and left me staring at nothing. It took me an embarrassingly long time to accept the culprit: a `<link rel="stylesheet">`.
