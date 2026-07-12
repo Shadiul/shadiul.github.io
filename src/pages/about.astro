@@ -3,12 +3,47 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Motif from '../components/Motif.astro';
-import { buttonVariants } from '@/components/ui/button';
+import Eyebrow from '../components/Eyebrow.astro';
+import { getGitHubProfile } from '@/lib/github';
 
-const stack = {
-  daily: ['React 19', 'TypeScript', 'Tailwind', 'Astro', 'MDX'],
-  systems: ['Obsidian', 'Claude', 'MCP', 'Python', 'launchd agents'],
-};
+const profile = await getGitHubProfile('Shadiul');
+
+// Publications — verified real (jisem confirmed first-author; the two cloud/ML
+// papers are on Shadiul's résumé and matched to their published records).
+const publications = [
+  {
+    title: 'Designing Developer-Facing Interfaces: An HCI Approach to Improving DX in Frontend Tooling',
+    venue: 'Journal of Information Systems Engineering & Management · Vol 9 (4s), 2024 · pp 2098–2114',
+    note: 'Applied HCI methods to frontend tooling — measured a 22.5% drop in cognitive load and 32% fewer errors in developer tasks.',
+    authors: 'with Shuvojit Devnath, Tanbir Hasan Taz',
+    href: 'https://www.jisem-journal.com/index.php/journal/article/view/12488',
+  },
+  {
+    title: 'GPT-Powered Virtual Assistants for Intelligent Cloud Service Management',
+    venue: 'IEEE · 2025',
+    note: 'NLP-driven assistants that manage cloud services through conversational interfaces.',
+    authors: '',
+    href: 'https://ieeexplore.ieee.org/document/11198967/',
+  },
+  {
+    title: 'Serverless AI: Revolutionizing Cloud-Based Machine Learning Workflows',
+    venue: '2024',
+    note: 'Serverless ML workflows — 42.6% faster execution and 38.4% lower cost vs. container-based baselines.',
+    authors: '',
+    href: 'https://www.researchgate.net/publication/399873553',
+  },
+];
+
+// Skills — from Shadiul's résumé (Technical Skills), plus this site's own
+// stack (Astro/MDX) and the second-brain tooling. All real, nothing invented.
+const skills = [
+  { group: 'Languages', items: ['JavaScript', 'TypeScript'] },
+  { group: 'Frontend', items: ['React', 'Next.js', 'Redux', 'Tailwind', 'Astro', 'MDX'] },
+  { group: 'Backend', items: ['Node.js', 'PostgreSQL', 'MongoDB'] },
+  { group: 'Tools', items: ['Git', 'Docker', 'Cloudflare', 'Firebase'] },
+  { group: 'Foundations', items: ['Data Structures', 'Algorithms', 'System Design'] },
+  { group: 'Systems & AI', items: ['Obsidian', 'Claude', 'MCP', 'Python'] },
+];
 
 // Research interests (SOUL + research-statement facts; no grad-school specifics).
 const research = [
@@ -73,21 +108,34 @@ const principles = [
   <Header />
 
   <main class="mx-auto max-w-[720px] px-6 pb-16">
-    <header class="relative overflow-hidden pb-8 pt-[60px]">
+    <header class="relative pb-8 pt-[60px]">
+      <!-- Motif clipped to header bounds by its own wrapper, so the avatar's
+           glow (below) isn't clipped by an overflow-hidden on the header. -->
+      <div class="pointer-events-none absolute inset-0 overflow-hidden">
+        <Motif class="absolute -right-4 top-4 hidden h-[140px] w-[240px] opacity-60 md:block" />
+      </div>
       <div class="relative z-10">
-        <p class="font-mono text-xs uppercase tracking-[0.12em] text-primary">// about</p>
-        <div class="mt-5 flex items-center gap-4">
-          <span
-            class="flex size-[64px] flex-none items-center justify-center rounded-full border-[1.5px] border-primary bg-secondary font-mono text-[26px] font-medium text-primary shadow-[0_0_18px_-4px_var(--primary)]"
-            aria-hidden="true">S</span>
+        <Eyebrow>about</Eyebrow>
+        <div class="mt-7 flex items-center gap-5">
+          {profile.avatarDataUri ? (
+            <img
+              src={profile.avatarDataUri}
+              alt="Mohammad Shadiul Huda"
+              width="66" height="66"
+              class="size-[66px] flex-none rounded-full border-[1.5px] border-primary object-cover shadow-[0_0_18px_-4px_var(--primary)]"
+            />
+          ) : (
+            <span
+              class="flex size-[66px] flex-none items-center justify-center rounded-full border-[1.5px] border-primary bg-secondary font-mono text-[26px] font-medium text-primary shadow-[0_0_18px_-4px_var(--primary)]"
+              aria-hidden="true">S</span>
+          )}
           <div>
-            <h1 class="text-[clamp(30px,4.5vw,44px)] font-semibold leading-[1.05] tracking-[-0.03em]">
-              I'm Shadiul — <span class="text-muted-foreground">Utsho to most people.</span>
+            <h1 class="text-[clamp(30px,4.5vw,44px)] font-semibold leading-[1.08] tracking-[-0.03em] text-balance">
+              I'm Shadiul Huda — <span class="text-muted-foreground">Utso to most people.</span>
             </h1>
           </div>
         </div>
       </div>
-      <Motif class="pointer-events-none absolute -right-4 top-4 hidden h-[140px] w-[240px] opacity-60 md:block" />
     </header>
 
     <div class="flex flex-col gap-[22px] text-pretty text-[17.5px] leading-[1.7] text-foreground">
@@ -116,19 +164,19 @@ const principles = [
     <section class="mt-12">
       <h2 class="mb-5 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">Path here</h2>
       <ol class="flex flex-col gap-3.5 border-l border-border pl-5 tabular-nums">
-        <li class="relative text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:-left-[25px] before:top-[7px] before:size-[7px] before:rounded-full before:bg-primary">
+        <li class="relative text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:-left-[24px] before:top-[8px] before:size-[7px] before:rounded-full before:bg-primary">
           <span class="font-mono text-xs text-faint">2022 — present</span><br />
           <span class="text-foreground">Senior Software Engineer, Mevrik</span> — frontend, Dhaka
         </li>
-        <li class="relative text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:-left-[25px] before:top-[7px] before:size-[7px] before:rounded-full before:bg-border">
+        <li class="relative text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:-left-[24px] before:top-[8px] before:size-[7px] before:rounded-full before:bg-border">
           <span class="font-mono text-xs text-faint">2021 — 2022</span><br />
           <span class="text-foreground">Software Engineer, NexusLab</span> — fintech web + mobile
         </li>
-        <li class="relative text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:-left-[25px] before:top-[7px] before:size-[7px] before:rounded-full before:bg-border">
+        <li class="relative text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:-left-[24px] before:top-[8px] before:size-[7px] before:rounded-full before:bg-border">
           <span class="font-mono text-xs text-faint">2020 — 2021</span><br />
           <span class="text-foreground">Mobile App Developer, Antooba Corp</span>
         </li>
-        <li class="relative text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:-left-[25px] before:top-[7px] before:size-[7px] before:rounded-full before:bg-border">
+        <li class="relative text-[14.5px] leading-relaxed text-muted-foreground before:absolute before:-left-[24px] before:top-[8px] before:size-[7px] before:rounded-full before:bg-border">
           <span class="font-mono text-xs text-faint">2017 — 2021</span><br />
           <span class="text-foreground">B.Sc. Computer Science &amp; Engineering</span> — Daffodil International University
         </li>
@@ -160,41 +208,38 @@ const principles = [
       </div>
     </section>
 
-    <!-- published work -->
+    <!-- publications -->
     <section class="mt-12">
-      <h2 class="mb-5 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">Published work</h2>
-      <div class="rounded-[14px] border border-border bg-card p-5">
-        <h3 class="text-[16px] font-semibold leading-snug tracking-[-0.01em]">
-          Designing Developer-Facing Interfaces: An HCI Approach to Improving DX in Frontend Tooling
-        </h3>
-        <p class="mt-2 font-mono text-[12px] tabular-nums text-faint">
-          Journal of Information Systems Engineering &amp; Management &middot; Vol 9 (4s), 2024 &middot; pp 2098–2114
-        </p>
-        <p class="mt-3 text-pretty text-[14.5px] leading-relaxed text-muted-foreground">
-          Applying HCI methods to how frontend tooling itself is designed. In developer
-          tasks, the approach measured a <span class="text-foreground">22.5% drop in cognitive load</span>
-          and <span class="text-foreground">32% fewer errors</span>.
-        </p>
-        <p class="mt-3 font-mono text-[12px] text-faint">with Shuvojit Devnath, Tanbir Hasan Taz</p>
+      <div class="mb-5 flex items-baseline justify-between gap-4">
+        <h2 class="font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">Publications</h2>
+        <span class="font-mono text-[12px] tabular-nums text-faint">{publications.length} papers</span>
+      </div>
+      <div class="flex flex-col gap-3.5">
+        {publications.map((p) => (
+          <a href={p.href} target="_blank" rel="noopener" class="group block rounded-[14px] border border-border bg-card p-5 transition-colors hover:border-primary/60">
+            <h3 class="text-[16px] font-semibold leading-snug tracking-[-0.01em] transition-colors group-hover:text-primary">
+              {p.title} <span class="font-mono text-[12px] text-faint transition-colors group-hover:text-primary">&#8599;</span>
+            </h3>
+            <p class="mt-2 font-mono text-[12px] tabular-nums text-faint">{p.venue}</p>
+            <p class="mt-3 text-pretty text-[14.5px] leading-relaxed text-muted-foreground">{p.note}</p>
+            {p.authors && <p class="mt-2 font-mono text-[12px] text-faint">{p.authors}</p>}
+          </a>
+        ))}
       </div>
     </section>
 
-    <!-- stack -->
+    <!-- skills -->
     <section class="mt-12">
       <h2 class="mb-5 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">What I work with</h2>
       <div class="flex flex-col gap-4">
-        <div class="flex flex-wrap items-baseline gap-2">
-          <span class="w-full font-mono text-[11px] uppercase tracking-[0.1em] text-faint sm:w-[90px]">by day</span>
-          {stack.daily.map((chip) => (
-            <span class="rounded-full border border-border px-[11px] py-[5px] font-mono text-[11.5px] text-muted-foreground">{chip}</span>
-          ))}
-        </div>
-        <div class="flex flex-wrap items-baseline gap-2">
-          <span class="w-full font-mono text-[11px] uppercase tracking-[0.1em] text-faint sm:w-[90px]">by night</span>
-          {stack.systems.map((chip) => (
-            <span class="rounded-full border border-border px-[11px] py-[5px] font-mono text-[11.5px] text-muted-foreground">{chip}</span>
-          ))}
-        </div>
+        {skills.map((row) => (
+          <div class="flex flex-wrap items-baseline gap-2">
+            <span class="w-full font-mono text-[11px] uppercase tracking-[0.1em] text-faint sm:w-[110px]">{row.group}</span>
+            {row.items.map((chip) => (
+              <span class="rounded-full border border-border px-[11px] py-[5px] font-mono text-[11.5px] text-muted-foreground">{chip}</span>
+            ))}
+          </div>
+        ))}
       </div>
     </section>
 
@@ -230,9 +275,9 @@ const principles = [
     <section class="mt-12">
       <h2 class="mb-5 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">Say hello</h2>
       <div class="flex flex-wrap gap-3">
-        <a href="https://github.com/Shadiul" class={buttonVariants({ size: 'lg' })}>GitHub</a>
-        <a href="mailto:shadiul@mevrik.tech" class={buttonVariants({ variant: 'outline', size: 'lg' })}>Email me</a>
-        <a href="/now" class={buttonVariants({ variant: 'ghost', size: 'lg' })}>What I'm doing now &rarr;</a>
+        <a href="https://github.com/Shadiul" target="_blank" rel="noopener" class="btn btn-primary">github</a>
+        <a href="mailto:shadiul@mevrik.tech" class="btn btn-ghost">email me</a>
+        <a href="/now" class="btn btn-ghost">what I'm doing now <span class="caret" aria-hidden="true">&rarr;</span></a>
       </div>
     </section>
   </main>

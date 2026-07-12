@@ -20,3 +20,6 @@ pnpm-debug.log*
 
 # migration reports (design artifacts, not shipped code)
 .migration/
+
+# build-time GitHub profile cache
+.cache/

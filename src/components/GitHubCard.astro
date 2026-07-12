@@ -1,0 +1,90 @@
+---
+import type { GitHubProfile } from '../lib/github';
+interface Props { profile: GitHubProfile }
+const { profile } = Astro.props;
+
+const CELL = 11, GAP = 3, STEP = CELL + GAP;
+const OPACITY = [1, 0.28, 0.5, 0.72, 1];
+const cells = profile.days.map((d, i) => ({
+  x: Math.floor(i / 7) * STEP,
+  y: (i % 7) * STEP,
+  fill: d.level === 0 ? 'var(--secondary)' : 'var(--primary)',
+  opacity: OPACITY[d.level] ?? 1,
+  stroke: d.level === 0 ? 'var(--border)' : 'transparent',
+}));
+const W = Math.ceil(profile.days.length / 7) * STEP - GAP;
+const H = 7 * STEP - GAP;
+
+const stats = [
+  { label: 'contributions', value: profile.contributions },
+  { label: 'repositories', value: profile.publicRepos },
+  { label: 'followers', value: profile.followers },
+];
+const legend = [0, 1, 2, 3, 4].map((l) => ({
+  bg: l === 0 ? 'var(--secondary)' : 'var(--primary)',
+  opacity: OPACITY[l],
+  ring: l === 0,
+}));
+const ghUrl = `https://github.com/${profile.login}`;
+---
+
+{profile.ok ? (
+  <div class="flex h-full flex-col justify-between gap-5 p-6">
+    <!-- header -->
+    <div class="flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2 font-mono text-[13px]">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15" class="text-foreground" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.5 11.5 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.898-.014 3.293 0 .322.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" /></svg>
+        <a href={ghUrl} target="_blank" rel="noopener" class="text-foreground transition-colors hover:text-primary">@{profile.login}</a>
+        {profile.memberSince && <span class="text-faint">&middot; since {profile.memberSince}</span>}
+      </div>
+      <a href={ghUrl} target="_blank" rel="noopener" class="font-mono text-[12px] text-primary hover:underline">follow &rarr;</a>
+    </div>
+
+    <!-- stat badges -->
+    <div class="grid grid-cols-3 gap-2.5">
+      {stats.map((s) => (
+        <div class="rounded-[10px] border border-border bg-background/40 px-3 py-2.5">
+          <div class="font-mono text-[19px] font-semibold tabular-nums leading-none text-primary">{s.value}</div>
+          <div class="mt-1.5 font-mono text-[9.5px] uppercase tracking-[0.06em] text-faint">{s.label}</div>
+        </div>
+      ))}
+    </div>
+
+    <!-- contribution graph -->
+    <div>
+      <div class="mb-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.08em] text-faint">
+        <span>last year</span>
+        <span class="flex items-center gap-1">
+          <span class="normal-case">less</span>
+          {legend.map((g) => (
+            <span class="inline-block size-[9px] rounded-[2px]" style={`background:${g.bg};opacity:${g.opacity};${g.ring ? 'box-shadow:inset 0 0 0 1px var(--border)' : ''}`} />
+          ))}
+          <span class="normal-case">more</span>
+        </span>
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} class="w-full" role="img" aria-label={`${profile.contributions} GitHub contributions in the last year`}>
+        {cells.map((c) => (
+          <rect x={c.x} y={c.y} width={CELL} height={CELL} rx="2.5" fill={c.fill} fill-opacity={c.opacity} stroke={c.stroke} stroke-width="1" />
+        ))}
+      </svg>
+    </div>
+
+    {profile.achievements.length > 0 && (
+      <div class="flex items-center gap-2 border-t border-border/70 pt-4">
+        <span class="font-mono text-[10px] uppercase tracking-[0.08em] text-faint">badges</span>
+        <div class="flex flex-wrap items-center gap-1.5">
+          {profile.achievements.map((a) => (
+            <span data-tip={a.name} tabindex="0" class="inline-flex">
+              <img src={a.dataUri} alt={a.name} width="24" height="24" class="size-6 transition-transform duration-200 hover:scale-125" loading="lazy" />
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+) : (
+  <div class="flex h-full flex-col items-center justify-center gap-2 p-6 font-mono text-[12px] text-faint">
+    <span class="uppercase tracking-[0.08em]">github</span>
+    <a href={ghUrl} class="text-primary hover:underline">@{profile.login} &rarr;</a>
+  </div>
+)}

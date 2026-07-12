@@ -1,0 +1,14 @@
+---
+/** Section eyebrow — a terminal glyph + a mono uppercase label (replaces the
+ *  old "// label" prefix). Usage: <Eyebrow>about</Eyebrow> */
+interface Props { class?: string }
+const { class: cls } = Astro.props;
+---
+
+<p class:list={['inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.12em] text-primary', cls]}>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" aria-hidden="true">
+    <path d="m4 17 6-6-6-6" />
+    <path d="M12 19h8" />
+  </svg>
+  <slot />
+</p>

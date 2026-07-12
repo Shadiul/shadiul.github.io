@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Motif from '../components/Motif.astro';
+import Eyebrow from '../components/Eyebrow.astro';
 
 // Inline stroke icons (lucide-style, MIT). Zero JS — rendered as static SVG.
 const ICONS: Record<string, string> = {
@@ -109,7 +110,7 @@ const sections: Section[] = [
   <main class="mx-auto max-w-[720px] px-6 pb-16">
     <header class="relative overflow-hidden pb-8 pt-[60px]">
       <div class="relative z-10">
-        <p class="font-mono text-xs uppercase tracking-[0.12em] text-primary">// setup</p>
+        <Eyebrow>setup</Eyebrow>
         <h1 class="mb-3.5 mt-4 text-[clamp(34px,5vw,56px)] font-semibold leading-[1.03] tracking-[-0.03em]">Uses</h1>
         <p class="max-w-[52ch] text-pretty text-lg text-muted-foreground">
           The tools that survive daily use — the frontend stack I ship in, the pieces

@@ -28,6 +28,10 @@ jobs:
         uses: withastro/action@v3
         # withastro/action installs deps, runs `astro build`, and
         # uploads ./dist as the Pages artifact automatically.
+        env:
+          # Authenticated GitHub API (5000/hr) for the build-time profile fetch
+          # in src/lib/github.ts — avoids unauthenticated rate limits on CI.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     needs: build

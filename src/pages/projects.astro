@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import KnowledgeGraph from '../components/KnowledgeGraph.astro';
+import Eyebrow from '../components/Eyebrow.astro';
 
 type Cat = 'systems' | 'frontend' | 'experiments' | 'work';
 
@@ -107,7 +108,7 @@ const filters: { key: 'all' | Cat; label: string }[] = [
   <main>
   <header class="px-7 pb-[30px] pt-[60px]">
     <div class="mx-auto max-w-[1080px]">
-      <p class="font-mono text-xs uppercase tracking-[0.12em] text-primary">// projects</p>
+      <Eyebrow>projects</Eyebrow>
       <h1 class="mb-3.5 mt-4 text-[clamp(34px,5vw,56px)] font-semibold leading-[1.03] tracking-[-0.03em]">
         Things I've built
       </h1>
@@ -136,7 +137,7 @@ const filters: { key: 'all' | Cat; label: string }[] = [
     </div>
 
     <!-- flagship -->
-    <article data-project data-cats="systems" class="mb-[22px] grid overflow-hidden rounded-2xl border border-border bg-card md:grid-cols-[1.15fr_.85fr]">
+    <article data-project data-spotlight data-cats="systems" class="spotlight mb-[22px] grid overflow-hidden rounded-2xl border border-border bg-card md:grid-cols-[1.15fr_.85fr]">
       <div class="p-[34px]">
         <span class="mb-3.5 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-primary">
           <span aria-hidden="true">&#9670;</span> Flagship
@@ -168,8 +169,9 @@ const filters: { key: 'all' | Cat; label: string }[] = [
       {builds.map((b) => (
         <div
           data-project
+          data-spotlight
           data-cats={b.cats.join(' ')}
-          class="group flex flex-col gap-3 rounded-[14px] border border-border bg-card p-6 transition-all duration-150 hover:-translate-y-[3px] hover:border-primary motion-reduce:hover:translate-y-0"
+          class="spotlight group flex flex-col gap-3 rounded-[14px] border border-border bg-card p-6 transition-all duration-150 hover:-translate-y-[3px] hover:border-primary motion-reduce:hover:translate-y-0"
         >
           <div class="flex items-center justify-between">
             <span class="flex size-[38px] items-center justify-center rounded-[10px] bg-accent text-[19px] text-primary" aria-hidden="true">{b.icon}</span>
@@ -198,4 +200,5 @@ const filters: { key: 'all' | Cat; label: string }[] = [
   <Footer />
 
   <script src="../scripts/project-filters.ts"></script>
+  <script src="../scripts/spotlight.ts"></script>
 </Base>

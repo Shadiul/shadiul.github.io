@@ -13,8 +13,8 @@ const { pathname } = Astro.url;
 
 <nav class="sticky top-0 z-20 border-b border-border bg-[color-mix(in_srgb,var(--background)_82%,transparent)] backdrop-blur-[10px]">
   <div class="mx-auto flex h-[60px] max-w-[1080px] items-center justify-between px-7">
-    <a href="/" class="flex items-center gap-2.5 font-mono text-sm tracking-[0.02em] text-foreground">
-      <span class="size-[9px] rounded-full bg-primary shadow-[0_0_12px_var(--primary)]" aria-hidden="true"></span>
+    <a href="/" class="group flex items-center gap-2.5 font-mono text-sm tracking-[0.02em] text-foreground">
+      <span class="brand-dot size-[9px] rounded-full bg-primary shadow-[0_0_12px_var(--primary)] transition-transform duration-300 group-hover:scale-125" aria-hidden="true"></span>
       shadiul<span class="text-faint">.github.io</span>
     </a>
     <div class="flex items-center gap-6">
@@ -22,8 +22,9 @@ const { pathname } = Astro.url;
         {links.map((l) => (
           <a
             href={l.href}
+            data-active={pathname.startsWith(l.href) ? '' : undefined}
             class:list={[
-              'transition-colors hover:text-foreground',
+              'navlink transition-colors hover:text-foreground',
               pathname.startsWith(l.href) && 'text-primary',
             ]}
           >{l.label}</a>
@@ -33,8 +34,8 @@ const { pathname } = Astro.url;
         id="theme-toggle"
         type="button"
         aria-label="Toggle color theme"
-        class="cursor-pointer rounded-[7px] border border-border bg-transparent px-2.5 py-1.5 font-mono text-xs text-muted-foreground transition hover:border-primary/50 hover:text-foreground"
-      >&#9680; theme</button>
+        class="group cursor-pointer rounded-[7px] border border-border bg-transparent px-2.5 py-1.5 font-mono text-xs text-muted-foreground transition hover:border-primary/50 hover:text-foreground"
+      ><span class="inline-block transition-transform duration-500 group-hover:rotate-180">&#9680;</span> theme</button>
       <div class="sm:hidden">
         <MobileNav pathname={pathname} client:media="(max-width: 639px)" />
       </div>
@@ -43,8 +44,24 @@ const { pathname } = Astro.url;
 </nav>
 
 <script is:inline>
-  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+  const __btn = document.getElementById('theme-toggle');
+  const __apply = () => {
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  };
+  __btn?.addEventListener('click', (e) => {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // @ts-ignore - startViewTransition is progressively enhanced
+    if (!document.startViewTransition || reduce) { __apply(); return; }
+    const x = e.clientX, y = e.clientY;
+    const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    // @ts-ignore
+    const t = document.startViewTransition(() => __apply());
+    t.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+        { duration: 480, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' },
+      );
+    });
   });
 </script>

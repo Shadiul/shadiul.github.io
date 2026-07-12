@@ -18,36 +18,85 @@ export async function getStaticPaths() {
 }
 
 const { post, older, newer } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const minutes = readingTime(post.body ?? '');
 ---
 
 <Base title={`${post.data.title} — Shadiul Huda`} description={post.data.description} ogImage={`/og/blog/${post.id}.png`}>
   <Header />
 
-  <article class="mx-auto max-w-[680px] px-6">
-    <a href="/blog" class="mb-[30px] mt-[38px] inline-block font-mono text-[12.5px] text-muted-foreground transition-colors hover:text-primary">&larr; all posts</a>
+  <div class="mx-auto grid max-w-[1080px] gap-x-10 px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,680px)_minmax(0,1fr)]">
+    <div class="hidden lg:block" aria-hidden="true"></div>
 
-    <div class="flex flex-wrap items-center gap-3.5 font-mono text-[12.5px] uppercase tracking-[0.06em] tabular-nums text-primary">
-      <span>{formatMonth(post.data.date)}</span>
-      <span class="text-faint">/</span>
-      <span>{post.data.tag}</span>
-      {post.data.draft && <><span class="text-faint">/</span><span class="text-faint">draft</span></>}
-    </div>
+    <article class="min-w-0">
+      <a href="/blog" class="mb-[30px] mt-[38px] inline-block font-mono text-[12.5px] text-muted-foreground transition-colors hover:text-primary">&larr; all posts</a>
 
-    <h1 class="mb-3.5 mt-4 text-[clamp(32px,5vw,46px)] font-semibold leading-[1.08] tracking-[-0.03em] text-balance">
-      {post.data.title}
-    </h1>
-    <p class="mb-[26px] text-pretty text-xl leading-normal text-muted-foreground">{post.data.description}</p>
+      <div class="flex flex-wrap items-center gap-3.5 font-mono text-[12.5px] uppercase tracking-[0.06em] tabular-nums text-primary">
+        <span>{formatMonth(post.data.date)}</span>
+        <span class="text-faint">/</span>
+        <span>{post.data.tag}</span>
+        {post.data.draft && <><span class="text-faint">/</span><span class="text-faint">draft</span></>}
+      </div>
 
-    <div class="mb-10 flex gap-[18px] border-y border-border py-3 font-mono text-[12.5px] tabular-nums text-faint">
-      <span>{minutes} min read</span><span>&middot;</span><span>{formatLong(post.data.date)}</span>
-    </div>
+      <h1 class="mb-3.5 mt-4 text-[clamp(32px,5vw,46px)] font-semibold leading-[1.08] tracking-[-0.03em] text-balance">
+        {post.data.title}
+      </h1>
+      <p class="mb-[26px] text-pretty text-xl leading-normal text-muted-foreground">{post.data.description}</p>
 
-    <div class="prose-post">
-      <Content />
-    </div>
-  </article>
+      <div class="mb-10 flex gap-[18px] border-y border-border py-3 font-mono text-[12.5px] tabular-nums text-faint">
+        <span>{minutes} min read</span><span>&middot;</span><span>{formatLong(post.data.date)}</span>
+      </div>
+
+      <div class="prose-post" data-size="m" data-font="sans">
+        <Content />
+      </div>
+    </article>
+
+    <aside class="hidden lg:block">
+      <div class="sticky top-[84px] mt-[92px] flex flex-col gap-7">
+        <!-- reading controls -->
+        <div>
+          <p class="mb-3 font-mono text-[10px] uppercase tracking-[0.09em] text-faint">reading</p>
+          <div class="flex flex-col gap-2.5">
+            <div class="flex items-center gap-2.5">
+              <span class="w-9 font-mono text-[11px] text-muted-foreground">size</span>
+              <div class="flex gap-1">
+                <button type="button" data-size="s" class="reading-btn leading-none" aria-label="Small text">A</button>
+                <button type="button" data-size="m" class="reading-btn text-[13px] leading-none" aria-label="Medium text">A</button>
+                <button type="button" data-size="l" class="reading-btn text-[15px] leading-none" aria-label="Large text">A</button>
+              </div>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <span class="w-9 font-mono text-[11px] text-muted-foreground">font</span>
+              <div class="flex gap-1">
+                <button type="button" data-font="sans" class="reading-btn">sans</button>
+                <button type="button" data-font="serif" class="reading-btn">serif</button>
+                <button type="button" data-font="mono" class="reading-btn">mono</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {toc.length > 0 && (
+          <nav aria-label="Table of contents">
+            <p class="mb-3 font-mono text-[10px] uppercase tracking-[0.09em] text-faint">on this page</p>
+            <ul class="flex flex-col gap-1.5">
+              {toc.map((h) => (
+                <li>
+                  <a
+                    href={`#${h.slug}`}
+                    data-toc-link={h.slug}
+                    class:list={['toc-link block border-l border-transparent py-[3px] text-[13px] leading-snug text-muted-foreground', h.depth === 3 ? 'pl-6' : 'pl-3']}
+                  >{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+      </div>
+    </aside>
+  </div>
 
   {(older || newer) && (
     <div class="mx-auto mt-[50px] flex max-w-[680px] justify-between gap-4 border-t border-border px-6 pt-[26px] font-mono text-[13px]">
@@ -118,4 +167,34 @@ const minutes = readingTime(post.body ?? '');
   }
   .prose-post hr { border: 0; border-top: 1px solid var(--border); margin: 36px 0; }
   .prose-post img { max-width: 100%; border-radius: 12px; }
+
+  /* Reading controls — font size + family knobs. */
+  .prose-post[data-size="s"] { font-size: 16px; }
+  .prose-post[data-size="l"] { font-size: 19.5px; }
+  .prose-post[data-font="serif"] { font-family: Georgia, "Times New Roman", serif; }
+  .prose-post[data-font="mono"] { font-family: var(--mono); }
+  .prose-post h2, .prose-post h3 { scroll-margin-top: 84px; }
+
+  .reading-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    color: var(--muted-foreground);
+    background: transparent;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  }
+  .reading-btn:hover { color: var(--foreground); border-color: color-mix(in srgb, var(--primary) 50%, transparent); }
+  .reading-btn[data-on] { color: var(--primary); border-color: var(--primary); background: var(--accent); }
+
+  .toc-link { transition: color 0.15s ease, border-color 0.15s ease; }
+  .toc-link:hover { color: var(--foreground); }
+  .toc-link[data-active] { color: var(--primary); border-color: var(--primary); }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 </style>
+
+<script src="../../scripts/reading.ts"></script>
