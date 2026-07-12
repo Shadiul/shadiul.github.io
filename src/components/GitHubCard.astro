@@ -75,7 +75,7 @@ const ghUrl = `https://github.com/${profile.login}`;
         <div class="flex flex-wrap items-center gap-1.5">
           {profile.achievements.map((a) => (
             <span data-tip={a.name} tabindex="0" class="inline-flex">
-              <img src={a.dataUri} alt={a.name} width="24" height="24" class="size-6 transition-transform duration-200 hover:scale-125" loading="lazy" />
+              <img src={a.url ?? a.dataUri} alt={a.name} width="24" height="24" class="size-6 transition-transform duration-200 hover:scale-125" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
             </span>
           ))}
         </div>

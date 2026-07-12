@@ -206,7 +206,7 @@ const categories: Category[] = [
         <span class="font-mono text-[9.5px] text-faint sm:hidden">{cat.note}</span>
       </div>
       {/* proficiency meter — 5-dot matrix */}
-      <span class="flex items-center gap-[4px]" title={`depth of use: ${cat.level}/5`} aria-label={`depth of use ${cat.level} of 5`}>
+      <span class="flex items-center gap-[4px]" role="img" title={`depth of use: ${cat.level}/5`} aria-label={`depth of use ${cat.level} of 5`}>
         {Array.from({ length: 5 }).map((_, i) => (
           <span class:list={["size-[6px] rounded-full transition-colors", i < cat.level ? "bg-primary" : "bg-border"]} />
         ))}

@@ -20,7 +20,9 @@ function writeDisk(user: string, p: GitHubProfile) {
 }
 
 export interface GHDay { level: number }
-export interface GHAchievement { name: string; dataUri: string }
+// url = the github CDN asset (referenced, not inlined — keeps the HTML small).
+// dataUri stays optional so an older disk-cache seed still renders as a fallback.
+export interface GHAchievement { name: string; url?: string; dataUri?: string }
 export interface GitHubProfile {
   ok: boolean;
   login: string;
@@ -50,12 +52,9 @@ async function fetchAchievements(user: string): Promise<GHAchievement[]> {
       const slug = m[1];
       if (seen.has(slug) || seen.size >= 8) continue;
       seen.add(slug);
-      try {
-        const img = await fetch(m[0]);
-        if (!img.ok) continue;
-        const buf = Buffer.from(await img.arrayBuffer());
-        out.push({ name: titleCase(slug), dataUri: `data:image/png;base64,${buf.toString('base64')}` });
-      } catch { /* skip this badge */ }
+      // Reference the CDN URL directly instead of downloading + inlining it —
+      // the badges then load lazily as separate resources, not in the HTML.
+      out.push({ name: titleCase(slug), url: m[0] });
     }
   } catch { /* no achievements */ }
   return out;

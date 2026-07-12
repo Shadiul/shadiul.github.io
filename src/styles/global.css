@@ -74,6 +74,7 @@
   --popover: #FFFFFF;
   --popover-foreground: #1A1626;
   --primary: #6A46F5;
+  --primary-solid: #6A46F5;
   --primary-foreground: #FFFFFF;
   --secondary: #F1EDFA;
   --secondary-foreground: #1A1626;
@@ -113,7 +114,8 @@
   --card-foreground: #ECE9F5;
   --popover: #16121F;
   --popover-foreground: #ECE9F5;
-  --primary: #7C5CFF;
+  --primary: #8062FF;
+  --primary-solid: #6E4EF0;
   --primary-foreground: #FFFFFF;
   --secondary: #1C1729;
   --secondary-foreground: #ECE9F5;
@@ -193,7 +195,7 @@
 }
 .btn:hover .caret { transform: translateX(3px); }
 .btn-primary {
-  background: var(--primary);
+  background: var(--primary-solid);
   color: var(--primary-foreground);
 }
 .btn-primary:hover {

@@ -157,11 +157,14 @@ const contactRows = [
     });
   }
 
-  // 3D tilt / parallax — the card leans toward the cursor. Flip stays on click/tap/focus.
+  // 3D tilt / parallax — the card leans toward the cursor. Flip is click/tap only.
+  // Tilt is enabled only for a fine pointer (mouse/trackpad); on touch it's off so
+  // taps flip cleanly without a stray tilt from the tap's own pointermove.
   const persp = document.querySelector('.card-perspective') as HTMLElement | null;
   const tilt = persp?.querySelector('.card-tilt') as HTMLElement | null;
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (persp && tilt && !reduceMotion) {
+  const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (persp && tilt && !reduceMotion && finePointer) {
     const MAX = 9;
     persp.addEventListener('pointermove', (ev) => {
       const e = ev as PointerEvent;
@@ -210,10 +213,18 @@ const contactRows = [
     transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
     transform-style: preserve-3d;
   }
-  /* Flip on click (checkbox) or keyboard focus — no longer on hover, so hover can tilt. */
-  .card-perspective:focus-within .card-inner,
+  /* Flip is driven ONLY by the checkbox — clicking/tapping the label toggles it,
+     and Space toggles it when focused. focus-within must NOT flip: otherwise a
+     second click un-checks but the retained focus keeps it flipped, which reads
+     as a stuck/glitchy card. */
   .card-toggle:checked ~ .card-tilt .card-inner {
     transform: rotateY(180deg);
+  }
+  /* Keyboard focus ring (no flip). */
+  .card-toggle:focus-visible ~ .card-tilt {
+    outline: 2px solid var(--primary);
+    outline-offset: 5px;
+    border-radius: 18px;
   }
   /* Parallax depth — front layers float above the card surface. */
   .card-layer {
