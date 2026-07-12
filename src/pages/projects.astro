@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import KnowledgeGraph from '../components/KnowledgeGraph.astro';
+import WhatIBuild from '../components/WhatIBuild.astro';
 import Eyebrow from '../components/Eyebrow.astro';
 
 type Cat = 'systems' | 'frontend' | 'experiments' | 'work';
@@ -84,6 +85,28 @@ const builds: Build[] = [
       'Analytics dashboards — deflection, volume, CSAT',
       'Drove the Radix to Base UI migration and a 66-component UI kit',
       'Kept the app under the Cloudflare Workers size ceiling; real-time chat over WebSockets',
+    ],
+  },
+  {
+    icon: '◎',
+    year: '2022–25',
+    title: 'Business Manager',
+    blurb:
+      "Mevrik's first-gen CX platform — the frontend I led before AX. A unified inbox for chat, email and calls, plus an AI voice call center, in-app video, CRM, campaigns and the first Mevrik AI tools.",
+    chips: ['React', 'Redux', 'Voximplant', 'WebRTC', 'WebSockets', 'Vite'],
+    cats: ['work', 'frontend'],
+    links: [],
+    dim: 'work · private',
+    role: 'Frontend lead',
+    detail:
+      "Mevrik's earlier customer-experience suite — the product I led the frontend on from 2022 until the AX rebuild. A React/Redux app spanning onboarding, an omni-channel inbox, an AI voice call center, in-app video, CRM, campaigns, a deep settings surface, and the first-generation Mevrik AI and bot-builder tools.",
+    highlights: [
+      'Rebuilt the unified inbox in React/Redux — ~30% faster',
+      'AI voice call center on Voximplant — voicebots, campaigns, transcription, recording & summaries (1+ yr)',
+      'Integrated in-app video calling — screen share and device control (third-party SDK)',
+      'CRM, campaigns and routing/automation rules',
+      'First-gen Mevrik AI text tools and a bot builder',
+      'Owned deploys — Cloudflare, CI/CD, Docker — handed clean to devops',
     ],
   },
   {
@@ -182,7 +205,8 @@ const filters: { key: 'all' | Cat; label: string }[] = [
     </div>
   </header>
 
-  <div class="mx-auto max-w-[1080px] px-7">
+  <div class="px-7">
+    <div class="mx-auto max-w-[1080px]">
     <!-- filters -->
     <div class="flex flex-wrap gap-2.5 pb-[34px] pt-2" role="group" aria-label="Filter projects">
       {filters.map((f) => (
@@ -269,9 +293,18 @@ const filters: { key: 'all' | Cat; label: string }[] = [
         </div>
       ))}
     </div>
+    </div>
   </div>
 
-  <div class="mt-10"></div>
+  <!-- what I build (module types — shared with home) -->
+  <section class="mt-10 border-t border-border px-7 py-[60px]">
+    <div class="mx-auto max-w-[1080px]">
+      <div class="mb-[26px] flex items-baseline justify-between gap-4">
+        <h2 class="font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">What I build at Mevrik</h2>
+      </div>
+      <WhatIBuild />
+    </div>
+  </section>
   </main>
   <Footer />
 

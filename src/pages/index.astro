@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import KnowledgeGraph from '../components/KnowledgeGraph.astro';
 import GitHubCard from '../components/GitHubCard.astro';
+import WhatIBuild from '../components/WhatIBuild.astro';
 import StackGrid from '../components/StackGrid.astro';
 import { getPosts, formatMonth } from '@/lib/blog';
 import { getGitHubProfile } from '@/lib/github';
@@ -30,7 +31,7 @@ const doing = [
   {
     icon: 'monitor',
     title: 'Frontend engineering',
-    body: "I lead the frontend for Mevrik's AI-agent platform — an omni-channel inbox, a CRM, an embeddable chat widget, an n8n-style workflow canvas, an AI agent studio, and analytics dashboards. React, Next.js, TanStack, Cloudflare Workers.",
+    body: "I lead the frontend for Mevrik's AI-agent platform — inbox, an AI voice call center, video calling, CRM, chat widget, workflow canvas, agent studio and dashboards — and own how it ships. React, Next.js, TanStack, Cloudflare.",
     href: '#build',
   },
   {
@@ -47,41 +48,15 @@ const doing = [
   },
 ];
 
-const proof = ['frontend lead · 2+ yrs', 'real-time · WebSockets', 'edge · Cloudflare Workers', 'design systems'];
+const proof = ['frontend lead · 2+ yrs', 'voice + video AI', 'ships to edge · CI/CD', 'real-time · WebSockets', 'design systems'];
 
 const stats = [
   { value: '5+', label: 'years of experience' },
   { value: '2+', label: 'yrs leading frontend' },
-  { value: '6+', label: 'product surfaces' },
+  { value: '9+', label: 'product surfaces' },
   { value: '3', label: 'publications' },
 ];
 
-const buildItems = [
-  {
-    title: 'Omni-channel inbox',
-    body: 'Chat, email and social in one triage-and-reply workspace.',
-  },
-  {
-    title: 'Embeddable chat widget',
-    body: 'A themeable widget that drops into any site via a one-line install script.',
-  },
-  {
-    title: 'CRM & segment builder',
-    body: 'Customer profiles, activity timelines and segments over server-paginated data.',
-  },
-  {
-    title: 'Workflow canvas',
-    body: 'An n8n-style node canvas for routing, auto-replies and automation rules.',
-  },
-  {
-    title: 'AI agent studio',
-    body: 'Where operators build, equip and deploy AI agents — identity, skills, knowledge, memory.',
-  },
-  {
-    title: 'Analytics dashboards',
-    body: 'Deflection, volume and CSAT — conversations turned into numbers.',
-  },
-];
 ---
 
 <Base title="Shadiul Huda — Senior Software Engineer" description="Mohammad Shadiul Huda — Senior Software Engineer and frontend lead of the Mevrik AX Platform, in Dhaka. I build interfaces and systems that remember.">
@@ -196,18 +171,7 @@ const buildItems = [
       <div class="mb-[26px] flex items-baseline justify-between gap-4">
         <h2 class="font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">What I build</h2>
       </div>
-      <p class="mb-[26px] max-w-[62ch] text-pretty text-[15.5px] text-muted-foreground">
-        One AI-agent CX platform at Mevrik, many surfaces. I can't show the
-        product — so here's what I build, by type.
-      </p>
-      <div class="grid gap-[18px] md:grid-cols-3" data-reveal-group>
-        {buildItems.map((b) => (
-          <div data-spotlight class="reveal spotlight rounded-[14px] border border-border bg-card p-6 transition-colors hover:border-primary/60">
-            <h3 class="mb-2 text-[18px] font-semibold tracking-[-0.01em]">{b.title}</h3>
-            <p class="text-pretty text-[14.5px] leading-relaxed text-muted-foreground">{b.body}</p>
-          </div>
-        ))}
-      </div>
+      <WhatIBuild />
     </div>
   </section>
 

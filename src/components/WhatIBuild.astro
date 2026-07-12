@@ -1,0 +1,55 @@
+---
+/**
+ * "What I build" — the Mevrik CX platform module types (products are
+ * confidential, so this describes them by type). Shared by home + projects.
+ * Usage: <WhatIBuild /> inside a section that supplies the heading.
+ */
+
+// Inline stroke icons (lucide-style, MIT). Zero JS.
+const ICONS: Record<string, string> = {
+  inbox:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>',
+  phone:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384z"/></svg>',
+  video:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="m16 13 5.22 3.48a.5.5 0 0 0 .78-.41V7.93a.5.5 0 0 0-.78-.41L16 11"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>',
+  chat:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M22 17a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg>',
+  users:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  workflow:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></svg>',
+  bot:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>',
+  chart:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>',
+  wrench:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+};
+
+const buildItems = [
+  { icon: 'inbox', title: 'Omni-channel inbox', body: 'Chat, email and social in one triage-and-reply workspace.' },
+  { icon: 'phone', title: 'AI voice call center', body: 'An AI-driven call center on Voximplant — voicebots, campaigns, live transcription, recording and call summaries.' },
+  { icon: 'video', title: 'In-app video calling', body: 'Embedded video calls with screen share and device control, via a third-party SDK.' },
+  { icon: 'chat', title: 'Embeddable chat widget', body: 'A themeable widget that drops into any site via a one-line install script.' },
+  { icon: 'users', title: 'CRM & segment builder', body: 'Customer profiles, activity timelines and segments over server-paginated data.' },
+  { icon: 'workflow', title: 'Workflow canvas', body: 'An n8n-style node canvas for routing, auto-replies and automation rules.' },
+  { icon: 'bot', title: 'AI agent studio', body: 'Where operators build, equip and deploy AI agents — identity, skills, knowledge, memory.' },
+  { icon: 'chart', title: 'Analytics dashboards', body: 'Deflection, volume and CSAT — conversations turned into numbers.' },
+  { icon: 'wrench', title: 'Internal devtools', body: 'Utilities and internal apps that speed the team up — plus the deploy pipeline (Cloudflare, CI/CD, Docker) into devops.' },
+];
+---
+
+<p class="mb-[26px] max-w-[64ch] text-pretty text-[15.5px] text-muted-foreground">
+  One omni-channel CX platform at Mevrik, many surfaces — plus the internal
+  tools behind them. I can't show the product, so here's what I build, by type.
+</p>
+<div class="grid gap-[18px] md:grid-cols-3" data-reveal-group>
+  {buildItems.map((b) => (
+    <div data-spotlight class="reveal spotlight flex flex-col rounded-[14px] border border-border bg-card p-6 transition-colors hover:border-primary/60">
+      <span class="mb-4 grid size-11 place-items-center rounded-[11px] border border-border bg-accent/40 text-primary" set:html={ICONS[b.icon]} />
+      <h3 class="mb-2 text-[18px] font-semibold tracking-[-0.01em]">{b.title}</h3>
+      <p class="text-pretty text-[14.5px] leading-relaxed text-muted-foreground">{b.body}</p>
+    </div>
+  ))}
+</div>
