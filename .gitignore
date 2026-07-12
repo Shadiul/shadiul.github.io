@@ -22,4 +22,5 @@ pnpm-debug.log*
 .migration/
 
 # build-time GitHub profile cache
-.cache/
+.cache/*
+!.cache/github-Shadiul.json
