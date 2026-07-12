@@ -111,7 +111,7 @@ const filters: { key: 'all' | Cat; label: string }[] = [
       <h1 class="mb-3.5 mt-4 text-[clamp(34px,5vw,56px)] font-semibold leading-[1.03] tracking-[-0.03em]">
         Things I've built
       </h1>
-      <p class="max-w-[52ch] text-lg text-muted-foreground">
+      <p class="max-w-[52ch] text-pretty text-lg text-muted-foreground">
         Systems, interfaces, and experiments. The ones I keep coming back to live at the top.
       </p>
     </div>
@@ -142,7 +142,7 @@ const filters: { key: 'all' | Cat; label: string }[] = [
           <span aria-hidden="true">&#9670;</span> Flagship
         </span>
         <h2 class="mb-3 text-[29px] font-semibold tracking-[-0.02em]">The Second Brain</h2>
-        <p class="mb-[18px] max-w-[48ch] text-[15.5px] text-muted-foreground">
+        <p class="mb-[18px] max-w-[48ch] text-pretty text-[15.5px] text-muted-foreground">
           A self-rewriting knowledge base Claude operates as a living second brain —
           sources rewrite existing pages, contradictions reconcile themselves, and
           scheduled agents maintain the vault while I sleep.
@@ -176,7 +176,7 @@ const filters: { key: 'all' | Cat; label: string }[] = [
             <span class="font-mono text-xs text-faint">{b.year}</span>
           </div>
           <h3 class="text-[19px] font-semibold tracking-[-0.01em]">{b.title}</h3>
-          <p class="flex-1 text-[14.5px] text-muted-foreground">{b.blurb}</p>
+          <p class="flex-1 text-pretty text-[14.5px] text-muted-foreground">{b.blurb}</p>
           <div class="flex flex-wrap gap-[7px]">
             {b.chips.map((chip) => (
               <span class="rounded-full border border-border px-[9px] py-1 font-mono text-[11px] text-muted-foreground">{chip}</span>

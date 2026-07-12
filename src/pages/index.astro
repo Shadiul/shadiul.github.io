@@ -59,7 +59,7 @@ const proof = ['zero JS by default', 'Lighthouse 100', 'dark + light', 'static &
         <h1 class="my-3.5 mb-5 text-[clamp(38px,6vw,68px)] font-semibold leading-[1.02] tracking-[-0.03em] text-balance">
           I build interfaces<br />and <span class="text-muted-foreground">systems that<br />remember.</span>
         </h1>
-        <p class="mb-[30px] max-w-[46ch] text-[19px] text-muted-foreground">
+        <p class="mb-[30px] max-w-[46ch] text-pretty text-[19px] text-muted-foreground">
           I ship frontend for an AI-agent platform by day, and build tools that
           think for themselves by night. I care about fast interfaces, clean
           systems, and notes that write themselves. Currently deep in React
@@ -91,7 +91,7 @@ const proof = ['zero JS by default', 'Lighthouse 100', 'dark + light', 'static &
           <div class="group rounded-[14px] border border-border bg-card p-6 transition-colors hover:border-primary/60">
             <span class="mb-4 grid size-11 place-items-center rounded-[11px] border border-border bg-accent/40 text-primary" set:html={ICONS[d.icon]} />
             <h3 class="mb-2 text-[18px] font-semibold tracking-[-0.01em]">{d.title}</h3>
-            <p class="text-[14.5px] leading-relaxed text-muted-foreground">{d.body}</p>
+            <p class="text-pretty text-[14.5px] leading-relaxed text-muted-foreground">{d.body}</p>
           </div>
         ))}
       </div>
@@ -155,7 +155,7 @@ const proof = ['zero JS by default', 'Lighthouse 100', 'dark + light', 'static &
               href={`/blog/${post.id}/`}
               class="group grid items-baseline gap-1.5 border-t border-border px-1 py-[18px] transition-all duration-150 hover:bg-gradient-to-r hover:from-accent hover:to-60% hover:pl-3 sm:grid-cols-[110px_1fr_auto] sm:gap-5"
             >
-              <span class="font-mono text-[12.5px] text-faint">{formatMonth(post.data.date)}</span>
+              <span class="font-mono text-[12.5px] tabular-nums text-faint">{formatMonth(post.data.date)}</span>
               <span class="text-lg font-medium tracking-[-0.01em] transition-colors group-hover:text-primary">
                 {post.data.title}{post.data.draft && <span class="ml-2 font-mono text-[11px] uppercase text-faint">draft</span>}
               </span>

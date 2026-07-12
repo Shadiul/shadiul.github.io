@@ -28,7 +28,7 @@ const minutes = readingTime(post.body ?? '');
   <article class="mx-auto max-w-[680px] px-6">
     <a href="/blog" class="mb-[30px] mt-[38px] inline-block font-mono text-[12.5px] text-muted-foreground transition-colors hover:text-primary">&larr; all posts</a>
 
-    <div class="flex flex-wrap items-center gap-3.5 font-mono text-[12.5px] uppercase tracking-[0.06em] text-primary">
+    <div class="flex flex-wrap items-center gap-3.5 font-mono text-[12.5px] uppercase tracking-[0.06em] tabular-nums text-primary">
       <span>{formatMonth(post.data.date)}</span>
       <span class="text-faint">/</span>
       <span>{post.data.tag}</span>
@@ -38,9 +38,9 @@ const minutes = readingTime(post.body ?? '');
     <h1 class="mb-3.5 mt-4 text-[clamp(32px,5vw,46px)] font-semibold leading-[1.08] tracking-[-0.03em] text-balance">
       {post.data.title}
     </h1>
-    <p class="mb-[26px] text-xl leading-normal text-muted-foreground">{post.data.description}</p>
+    <p class="mb-[26px] text-pretty text-xl leading-normal text-muted-foreground">{post.data.description}</p>
 
-    <div class="mb-10 flex gap-[18px] border-y border-border py-3 font-mono text-[12.5px] text-faint">
+    <div class="mb-10 flex gap-[18px] border-y border-border py-3 font-mono text-[12.5px] tabular-nums text-faint">
       <span>{minutes} min read</span><span>&middot;</span><span>{formatLong(post.data.date)}</span>
     </div>
 
@@ -82,6 +82,7 @@ const minutes = readingTime(post.body ?? '');
   .prose-post {
     font-size: 17.5px;
     line-height: 1.7;
+    text-wrap: pretty;
   }
   .prose-post p { margin: 0 0 22px; }
   .prose-post a { color: var(--primary); }
