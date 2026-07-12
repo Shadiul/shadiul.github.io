@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+// Update the date whenever this page's content changes.
+const updated = 'July 2026';
+---
+
+<Base
+  title="/now — Shadiul Huda"
+  description="What Shadiul is focused on right now — AX Platform frontend, this site, and a second brain that runs itself."
+  ogImage="/og/now.png"
+>
+  <Header />
+
+  <main class="mx-auto max-w-[720px] px-6 pb-16">
+    <header class="pb-8 pt-[60px]">
+      <p class="font-mono text-xs uppercase tracking-[0.12em] text-primary">// currently</p>
+      <h1 class="mb-3.5 mt-4 text-[clamp(34px,5vw,56px)] font-semibold leading-[1.03] tracking-[-0.03em]">Now</h1>
+      <p class="font-mono text-[12.5px] text-faint">last updated &middot; {updated} &middot; this is a <a href="https://nownownow.com/about" class="text-muted-foreground underline underline-offset-4 hover:text-primary">/now page</a></p>
+    </header>
+
+    <div class="flex flex-col gap-10">
+      <section>
+        <h2 class="mb-3 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">At work</h2>
+        <p class="text-[17px] leading-[1.7]">
+          Deep in wiring the <a href="https://mevrik.tech" class="text-primary hover:underline">Mevrik</a> AX Platform
+          frontend to its live backend — the console, the embeddable chat
+          widget, and the shared UI kit. The platform runs customer experience
+          with AI agents while humans supervise; my job is making that fast and
+          honest in the browser.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="mb-3 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">At night</h2>
+        <p class="text-[17px] leading-[1.7]">
+          Two systems, feeding each other. The
+          <a href="/projects" class="text-primary hover:underline">second brain</a> keeps
+          getting smarter — scheduled agents now maintain it nightly, and I
+          measure its recall with a small eval harness. And this site: freshly
+          rebuilt on Astro, with a <a href="/blog" class="text-primary hover:underline">build-log post</a> drafting.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="mb-3 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">Learning</h2>
+        <p class="text-[17px] leading-[1.7]">
+          Mostly by building: agentic workflows — what it takes to let an AI
+          operate a real system (my vault) safely, with audit trails and
+          honest failure modes.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Base>

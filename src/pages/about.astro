@@ -1,0 +1,121 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { buttonVariants } from '@/components/ui/button';
+
+const stack = {
+  daily: ['React 19', 'TypeScript', 'Tailwind', 'Astro', 'MDX'],
+  systems: ['Obsidian', 'Claude', 'MCP', 'Python', 'launchd agents'],
+};
+
+// Public-friendly versions of stated working principles (SOUL, 2026-07-11).
+const principles = [
+  {
+    title: 'Verify live, not just green',
+    body: 'Passing typecheck and CI is not "done". Done is clicking through the real thing against real APIs.',
+  },
+  {
+    title: "Don't fake it, don't delete it",
+    body: 'If a feature is not ready, disable it honestly. Never ship a UI that pretends, and never rip out work that still has a job to do.',
+  },
+  {
+    title: 'Ask before deciding',
+    body: 'Ambiguous product calls get surfaced before the change lands — nobody should discover a decision after the fact.',
+  },
+  {
+    title: 'Notes that write themselves',
+    body: 'If knowledge only lives in my head, it is a liability. Everything worth keeping goes into a system that keeps it current.',
+  },
+];
+---
+
+<Base
+  title="About — Shadiul Huda"
+  description="Shadiul Huda — Utsho — senior frontend engineer at Mevrik in Dhaka. Interfaces by day, self-maintaining systems by night."
+  ogImage="/og/about.png"
+>
+  <Header />
+
+  <main class="mx-auto max-w-[720px] px-6 pb-16">
+    <header class="pb-8 pt-[60px]">
+      <p class="font-mono text-xs uppercase tracking-[0.12em] text-primary">// about</p>
+      <div class="mt-5 flex items-center gap-4">
+        <span
+          class="flex size-[64px] flex-none items-center justify-center rounded-full border-[1.5px] border-primary bg-secondary font-mono text-[26px] font-medium text-primary shadow-[0_0_18px_-4px_var(--primary)]"
+          aria-hidden="true">S</span>
+        <div>
+          <h1 class="text-[clamp(30px,4.5vw,44px)] font-semibold leading-[1.05] tracking-[-0.03em]">
+            I'm Shadiul — <span class="text-muted-foreground">Utsho to most people.</span>
+          </h1>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-col gap-[22px] text-[17.5px] leading-[1.7] text-foreground">
+      <p>
+        I'm a senior frontend engineer at <a href="https://mevrik.tech" class="text-primary hover:underline">Mevrik</a>,
+        working from Dhaka, Bangladesh. We build AI agents that run customer
+        experience while humans supervise what matters — I ship the frontend
+        for that platform: the console people work in, the chat widget that
+        embeds anywhere, and the UI kit both are built from.
+      </p>
+      <p>
+        Nights are for systems. The one I keep coming back to is my
+        <a href="/projects" class="text-primary hover:underline">second brain</a> —
+        a knowledge base Claude operates for me, where new information rewrites
+        old pages and scheduled agents reconcile the vault while I sleep. This
+        site is another one of those builds: it doubles as the
+        <a href="/blog" class="text-primary hover:underline">build log</a>.
+      </p>
+      <p>
+        I care about interfaces that stay fast, systems that stay honest, and
+        notes that stay current without me babysitting them.
+      </p>
+    </div>
+
+    <!-- stack -->
+    <section class="mt-12">
+      <h2 class="mb-5 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">What I work with</h2>
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-wrap items-baseline gap-2">
+          <span class="w-full font-mono text-[11px] uppercase tracking-[0.1em] text-faint sm:w-[90px]">by day</span>
+          {stack.daily.map((chip) => (
+            <span class="rounded-full border border-border px-[11px] py-[5px] font-mono text-[11.5px] text-muted-foreground">{chip}</span>
+          ))}
+        </div>
+        <div class="flex flex-wrap items-baseline gap-2">
+          <span class="w-full font-mono text-[11px] uppercase tracking-[0.1em] text-faint sm:w-[90px]">by night</span>
+          {stack.systems.map((chip) => (
+            <span class="rounded-full border border-border px-[11px] py-[5px] font-mono text-[11.5px] text-muted-foreground">{chip}</span>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- principles -->
+    <section class="mt-12">
+      <h2 class="mb-5 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">How I work</h2>
+      <div class="grid gap-[14px] sm:grid-cols-2">
+        {principles.map((p) => (
+          <div class="rounded-[14px] border border-border bg-card p-5">
+            <h3 class="mb-1.5 text-[15.5px] font-semibold tracking-[-0.01em]">{p.title}</h3>
+            <p class="text-[14px] leading-relaxed text-muted-foreground">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- reach -->
+    <section class="mt-12">
+      <h2 class="mb-5 font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">Say hello</h2>
+      <div class="flex flex-wrap gap-3">
+        <a href="https://github.com/Shadiul" class={buttonVariants({ size: 'lg' })}>GitHub</a>
+        <a href="mailto:shadiul@mevrik.tech" class={buttonVariants({ variant: 'outline', size: 'lg' })}>Email me</a>
+        <a href="/now" class={buttonVariants({ variant: 'ghost', size: 'lg' })}>What I'm doing now &rarr;</a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>

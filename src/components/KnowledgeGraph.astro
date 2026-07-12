@@ -1,0 +1,27 @@
+---
+/**
+ * The signature identity element: drifting knowledge-graph nodes + links,
+ * drawn in the accent violet. Vanilla canvas — zero framework JS.
+ * Reusable: tune density via props. Respects prefers-reduced-motion
+ * (draws a single static frame instead of animating).
+ */
+interface Props {
+  nodes?: number;
+  speed?: number;
+  density?: number;
+  reach?: number;
+  class?: string;
+}
+const { nodes = 34, speed = 0.22, density = 0.06, reach = 150, class: className } = Astro.props;
+---
+
+<canvas
+  class:list={['block size-full', className]}
+  data-graph
+  data-n={nodes}
+  data-sp={speed}
+  data-dens={density}
+  data-reach={reach}
+  aria-hidden="true"></canvas>
+
+<script src="../scripts/knowledge-graph.ts"></script>

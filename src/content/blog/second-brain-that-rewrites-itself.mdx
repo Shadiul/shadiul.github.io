@@ -1,0 +1,47 @@
+---
+title: Building a second brain that rewrites itself
+description: Most note apps are filing cabinets. I wanted one that thinks — where new information rewrites old pages, contradictions get reconciled, and agents tidy up while I sleep.
+date: 2026-07-12
+tag: systems
+draft: true
+---
+
+For years my notes were write-only. I'd capture something, feel productive, and never look at it again. The problem wasn't capture — it was that nothing ever **changed** after it landed. A note written in January stayed exactly as wrong in July.
+
+So I rebuilt the whole thing around one rule: every new source must make the existing vault _smarter_, not just bigger.
+
+## The core idea
+
+When a new source comes in, it doesn't just get appended. It rewrites the pages it touches. If a fact changed, the old value isn't deleted — it's moved into a timeline with the date I learned it. That way I can ask `who was my manager in February?` and get a real answer.
+
+> The vault after an ingest should be different — not just longer. If old pages aren't more connected and more current, the ingest wasn't deep enough.
+
+## Notes written for a machine
+
+The twist: I don't really read these notes. Claude does. So every note is written **AI-first** — a plain-English preamble, rich frontmatter, a source link on every claim, and wikilinks everywhere so the graph stays traversable.
+
+```yaml
+---
+type: project
+tags: [second-brain, systems]
+ai-first: true
+---
+
+## For future Claude
+A self-rewriting knowledge base. Read this
+first to decide relevance in ~10 seconds.
+```
+
+## Agents that work the night shift
+
+Four scheduled jobs run on my work machine as plain `launchd` tasks: a morning daily note, a weekly health check, a weekly review, and a synthesis agent that hunts for patterns across unrelated sources. Each one runs Claude headless against the vault, writes its changes in place, and never commits — I review the diff over coffee.
+
+- Nothing is deleted — only added, updated, or linked.
+- Contradictions get flagged, not silently overwritten.
+- Everything is logged, so I can audit what changed and why.
+
+## Measuring whether it actually works
+
+A knowledge base you can't retrieve from is a diary. So I built a small eval harness that generates questions from real notes and scores whether search finds the right one. The first baseline was humbling: the right note ranked #1 only about a third of the time, because long, chatty notes kept beating short canonical ones in a plain term-frequency ranking. Now retrieval quality is a number I can move, not a vibe.
+
+It's not magic. It's just a filing cabinet that finally does its own filing — built on the open-source [obsidian-second-brain](https://github.com/eugeniughelbur/obsidian-second-brain) framework, operated by Claude, and audited by me.

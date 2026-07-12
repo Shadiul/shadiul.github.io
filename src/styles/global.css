@@ -1,0 +1,176 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ------------------------------------------------------------------ *
+ * One token system: shadcn's semantic tokens, themed to the approved
+ * violet palette (vault Home mockup, 2026-07-12). Components and our
+ * own markup share these — use `bg-background`, `text-foreground`,
+ * `text-primary`, `bg-card`, `border-border`, `text-muted-foreground`.
+ * Two extras kept from the mockup: `--faint` (tertiary text) and a
+ * mono font for eyebrows / nav / metadata.
+ * Dark mode via the `.dark` class (shadcn convention).
+ * ------------------------------------------------------------------ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* project extra: tertiary/dim text from the mockup */
+  --color-faint: var(--faint);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--sans);
+  --font-mono: var(--mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* Light theme (default :root) — violet on near-white. */
+:root {
+  --radius: 0.625rem;
+
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  --background: #F6F4FB;
+  --foreground: #1A1626;
+  --card: #FFFFFF;
+  --card-foreground: #1A1626;
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1626;
+  --primary: #6A46F5;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F1EDFA;
+  --secondary-foreground: #1A1626;
+  --muted: #F1EDFA;
+  --muted-foreground: #5A5470;
+  --accent: #EFEBFD;
+  --accent-foreground: #6A46F5;
+  /* tertiary text — AA (4.8:1) on --background */
+  --faint: #6F6885;
+  --code: #F3F0FB;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #E5E0F2;
+  --input: #E5E0F2;
+  --ring: #6A46F5;
+
+  --chart-1: #6A46F5;
+  --chart-2: #7C5CFF;
+  --chart-3: #9A80FF;
+  --chart-4: #B9A8FF;
+  --chart-5: #D5CDEC;
+
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1A1626;
+  --sidebar-primary: #6A46F5;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #EFEBFD;
+  --sidebar-accent-foreground: #6A46F5;
+  --sidebar-border: #E5E0F2;
+  --sidebar-ring: #6A46F5;
+}
+
+/* Dark theme — violet on violet-biased near-black (the dark-first look). */
+.dark {
+  --background: #0E0B16;
+  --foreground: #ECE9F5;
+  --card: #16121F;
+  --card-foreground: #ECE9F5;
+  --popover: #16121F;
+  --popover-foreground: #ECE9F5;
+  --primary: #7C5CFF;
+  --primary-foreground: #FFFFFF;
+  --secondary: #1C1729;
+  --secondary-foreground: #ECE9F5;
+  --muted: #1C1729;
+  --muted-foreground: #9A93B0;
+  --accent: #1A1430;
+  --accent-foreground: #ECE9F5;
+  /* tertiary text — AA (5.0:1) on --background */
+  --faint: #837CA0;
+  --code: #12101B;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: #26203A;
+  --input: #26203A;
+  --ring: #7C5CFF;
+
+  --chart-1: #7C5CFF;
+  --chart-2: #9A80FF;
+  --chart-3: #B9A8FF;
+  --chart-4: #6A46F5;
+  --chart-5: #352C50;
+
+  --sidebar: #16121F;
+  --sidebar-foreground: #ECE9F5;
+  --sidebar-primary: #7C5CFF;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #1A1430;
+  --sidebar-accent-foreground: #ECE9F5;
+  --sidebar-border: #26203A;
+  --sidebar-ring: #7C5CFF;
+}
+
+@layer base {
+  html { color-scheme: dark light; }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    line-height: 1.6;
+  }
+  a { color: inherit; text-decoration: none; }
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
+
+/* Shiki dual-theme switch: astro emits --shiki-light/--shiki-dark vars per token. */
+.astro-code,
+.astro-code span {
+  color: var(--shiki-light);
+}
+.dark .astro-code,
+.dark .astro-code span {
+  color: var(--shiki-dark);
+}
+/* Code block chrome comes from our tokens, not the shiki theme background. */
+.astro-code {
+  background-color: var(--code) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

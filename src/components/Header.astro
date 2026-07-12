@@ -1,0 +1,50 @@
+---
+import { MobileNav } from './MobileNav';
+
+const links = [
+  { href: '/projects', label: 'projects' },
+  { href: '/blog', label: 'blog' },
+  { href: '/about', label: 'about' },
+  { href: '/uses', label: '/uses' },
+  { href: '/now', label: '/now' },
+];
+const { pathname } = Astro.url;
+---
+
+<nav class="sticky top-0 z-20 border-b border-border bg-[color-mix(in_srgb,var(--background)_82%,transparent)] backdrop-blur-[10px]">
+  <div class="mx-auto flex h-[60px] max-w-[1080px] items-center justify-between px-7">
+    <a href="/" class="flex items-center gap-2.5 font-mono text-sm tracking-[0.02em] text-foreground">
+      <span class="size-[9px] rounded-full bg-primary shadow-[0_0_12px_var(--primary)]" aria-hidden="true"></span>
+      shadiul<span class="text-faint">.github.io</span>
+    </a>
+    <div class="flex items-center gap-6">
+      <div class="hidden items-center gap-6 font-mono text-[13px] text-muted-foreground sm:flex">
+        {links.map((l) => (
+          <a
+            href={l.href}
+            class:list={[
+              'transition-colors hover:text-foreground',
+              pathname.startsWith(l.href) && 'text-primary',
+            ]}
+          >{l.label}</a>
+        ))}
+      </div>
+      <button
+        id="theme-toggle"
+        type="button"
+        aria-label="Toggle color theme"
+        class="cursor-pointer rounded-[7px] border border-border bg-transparent px-2.5 py-1.5 font-mono text-xs text-muted-foreground transition hover:border-primary/50 hover:text-foreground"
+      >&#9680; theme</button>
+      <div class="sm:hidden">
+        <MobileNav pathname={pathname} client:media="(max-width: 639px)" />
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script is:inline>
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  });
+</script>

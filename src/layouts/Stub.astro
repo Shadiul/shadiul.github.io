@@ -1,0 +1,24 @@
+---
+/** Minimal on-brand placeholder for routes that are planned but not built yet. */
+import Base from './Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  eyebrow: string;
+  note: string;
+}
+const { title, eyebrow, note } = Astro.props;
+---
+
+<Base title={`${title} — Shadiul Huda`}>
+  <Header />
+  <main class="mx-auto flex min-h-[60dvh] max-w-[1080px] flex-col justify-center px-7 py-20">
+    <p class="font-mono text-xs uppercase tracking-[0.12em] text-primary">{eyebrow}</p>
+    <h1 class="my-3.5 text-[clamp(34px,5vw,56px)] font-semibold leading-[1.05] tracking-[-0.03em]">{title}</h1>
+    <p class="max-w-[46ch] text-[17px] text-muted-foreground">{note}</p>
+    <p class="mt-6 font-mono text-[13px] text-faint">// under construction</p>
+  </main>
+  <Footer />
+</Base>

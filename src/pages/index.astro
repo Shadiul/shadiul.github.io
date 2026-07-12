@@ -1,0 +1,118 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import KnowledgeGraph from '../components/KnowledgeGraph.astro';
+import { buttonVariants } from '@/components/ui/button';
+import { getPosts, formatMonth } from '@/lib/blog';
+
+const recent = (await getPosts()).slice(0, 4);
+---
+
+<Base title="Shadiul Huda — frontend engineer" description="Shadiul Huda — senior frontend engineer in Dhaka. I build interfaces and systems that remember.">
+  <Header />
+
+  <main>
+  <!-- hero -->
+  <header class="relative overflow-hidden border-b border-border px-7 pb-16 pt-[74px]">
+    <div class="mx-auto grid max-w-[1080px] items-center gap-10 md:grid-cols-[1.05fr_.95fr]">
+      <div>
+        <div class="mb-1.5 flex items-center gap-3.5">
+          <span
+            class="flex size-[52px] flex-none items-center justify-center rounded-full border-[1.5px] border-primary bg-secondary font-mono text-[22px] font-medium text-primary shadow-[0_0_18px_-4px_var(--primary)]"
+            aria-hidden="true">S</span>
+          <div class="flex flex-col gap-[3px]">
+            <span class="font-mono text-xs uppercase tracking-[0.12em] text-primary">Shadiul &middot; "Utsho"</span>
+            <span class="text-[13px] text-muted-foreground">Senior frontend engineer &middot; Dhaka, BD</span>
+          </div>
+        </div>
+        <h1 class="my-3.5 mb-5 text-[clamp(38px,6vw,68px)] font-semibold leading-[1.02] tracking-[-0.03em] text-balance">
+          I build interfaces<br />and <span class="text-muted-foreground">systems that<br />remember.</span>
+        </h1>
+        <p class="mb-[30px] max-w-[46ch] text-[19px] text-muted-foreground">
+          I ship frontend for an AI-agent platform by day, and build tools that
+          think for themselves by night. I care about fast interfaces, clean
+          systems, and notes that write themselves. Currently deep in React,
+          Astro, and teaching a machine to keep my second brain.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/projects" class={buttonVariants({ size: 'lg' })}>
+            View projects <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a href="/blog" class={buttonVariants({ variant: 'outline', size: 'lg' })}>Read the blog</a>
+        </div>
+      </div>
+      <div class="relative order-first aspect-[16/10] overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-card to-background md:order-none md:aspect-[1/.86]">
+        <KnowledgeGraph />
+        <div class="absolute bottom-3 left-3.5 font-mono text-[11px] uppercase tracking-[0.08em] text-faint">// knowledge graph</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- featured project -->
+  <section class="border-b border-border px-7 py-[60px]">
+    <div class="mx-auto max-w-[1080px]">
+      <div class="mb-[26px] flex items-baseline justify-between gap-4">
+        <h2 class="font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">Featured project</h2>
+        <a href="/projects" class="font-mono text-[13px] text-primary hover:underline">all projects &rarr;</a>
+      </div>
+      <div class="grid overflow-hidden rounded-2xl border border-border bg-card md:grid-cols-2">
+        <div class="p-8">
+          <span class="mb-3.5 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-primary">
+            <span aria-hidden="true">&#9670;</span> Flagship
+          </span>
+          <h3 class="mb-3 text-[27px] font-semibold tracking-[-0.02em]">The Second Brain</h3>
+          <p class="mb-[18px] text-[15.5px] text-muted-foreground">
+            A self-rewriting knowledge base that Claude operates as a living
+            second brain — sources rewrite existing pages, contradictions
+            reconcile automatically, and scheduled agents maintain the vault
+            while I sleep.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            {['Obsidian', 'Claude', 'MCP', 'AI-first notes', 'cron agents'].map((chip) => (
+              <span class="rounded-full border border-border px-[11px] py-[5px] font-mono text-[11.5px] text-muted-foreground">{chip}</span>
+            ))}
+          </div>
+        </div>
+        <div class="relative min-h-[180px] border-t border-border bg-gradient-to-br from-accent to-secondary md:min-h-[260px] md:border-l md:border-t-0">
+          <div class="absolute inset-0">
+            <KnowledgeGraph nodes={20} speed={0.16} density={0.09} reach={120} />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- recent writing -->
+  <section class="border-b border-border px-7 py-[60px]">
+    <div class="mx-auto max-w-[1080px]">
+      <div class="mb-[26px] flex items-baseline justify-between gap-4">
+        <h2 class="font-mono text-[15px] font-medium uppercase tracking-[0.04em] text-muted-foreground">Recent writing</h2>
+        <a href="/blog" class="font-mono text-[13px] text-primary hover:underline">all posts &rarr;</a>
+      </div>
+      {recent.length === 0 ? (
+        <p class="border-t border-border px-1 py-[18px] font-mono text-[13px] text-faint">
+          // first posts land soon — a build-log of the second brain is drafting
+        </p>
+      ) : (
+        <div class="flex flex-col">
+          {recent.map((post) => (
+            <a
+              href={`/blog/${post.id}/`}
+              class="group grid items-baseline gap-1.5 border-t border-border px-1 py-[18px] transition-all duration-150 hover:bg-gradient-to-r hover:from-accent hover:to-60% hover:pl-3 sm:grid-cols-[110px_1fr_auto] sm:gap-5"
+            >
+              <span class="font-mono text-[12.5px] text-faint">{formatMonth(post.data.date)}</span>
+              <span class="text-lg font-medium tracking-[-0.01em] transition-colors group-hover:text-primary">
+                {post.data.title}{post.data.draft && <span class="ml-2 font-mono text-[11px] uppercase text-faint">draft</span>}
+              </span>
+              <span class="hidden rounded-full border border-border px-2.5 py-[3px] font-mono text-[11.5px] text-muted-foreground sm:inline">{post.data.tag}</span>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+  </main>
+
+  <Footer />
+</Base>
