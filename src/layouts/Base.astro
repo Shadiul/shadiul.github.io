@@ -60,5 +60,11 @@ const ogImageUrl = new URL(ogImage, Astro.site);
   <body>
     <slot />
     <script src="../scripts/reveal.ts"></script>
+    <!-- Live demo of the Mevrik embeddable chat widget I build. Lazy-loaded on
+         click so the third-party script never touches first paint (keeps 100s). -->
+    <button id="chat-launcher" type="button" class="chat-launcher" aria-label="Chat with Mevrik AI — a live demo of the widget I build">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    <script src="../scripts/chat-launcher.ts"></script>
   </body>
 </html>

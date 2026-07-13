@@ -320,3 +320,26 @@
   ::view-transition-old(root),
   ::view-transition-new(root) { animation: none !important; }
 }
+
+/* Lazy chat launcher — a lightweight button that defers the Mevrik widget's
+   third-party JS until a visitor actually clicks it (keeps Lighthouse at 100). */
+.chat-launcher {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 9999px;
+  border: none;
+  background: var(--primary-solid);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 12px 30px -8px var(--primary);
+  transition: transform 0.2s ease;
+}
+.chat-launcher:hover { transform: translateY(-2px) scale(1.05); }
+.chat-launcher svg { width: 24px; height: 24px; }
+@media (prefers-reduced-motion: reduce) { .chat-launcher { transition: none; } }
